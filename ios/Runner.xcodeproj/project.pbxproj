@@ -107,7 +107,6 @@
 				2D2124E164BA96918EFC3936 /* Pods-RunnerTests.release.xcconfig */,
 				E0F4A75236BCD8F7884DA208 /* Pods-RunnerTests.profile.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -365,7 +364,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
+			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build\n";
 		};
 		F5E80ADB575CB4E7C6F7C881 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
