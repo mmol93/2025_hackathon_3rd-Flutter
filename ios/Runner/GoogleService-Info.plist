@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>571714783418-7vqc3i8lbgboap6o4ns8sm8oo3055d32.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.571714783418-7vqc3i8lbgboap6o4ns8sm8oo3055d32</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>571714783418-5f3j4et9v42ufqhhtnvgdvl1b0bng32i.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBP_21tFOvq-DaQojYL_N2zCYUkoW9R3sA</string>
+	<key>GCM_SENDER_ID</key>
+	<string>571714783418</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.easyo.babysitterHam</string>
+	<key>PROJECT_ID</key>
+	<string>endless-fire-468401-f8</string>
+	<key>STORAGE_BUCKET</key>
+	<string>endless-fire-468401-f8.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:571714783418:ios:968666332198c1298d5a83</string>
+</dict>
+</plist>
