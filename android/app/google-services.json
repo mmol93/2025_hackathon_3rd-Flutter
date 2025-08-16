@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "571714783418",
+    "project_id": "endless-fire-468401-f8",
+    "storage_bucket": "endless-fire-468401-f8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:571714783418:android:19e70b1f4bfaa8228d5a83",
+        "android_client_info": {
+          "package_name": "com.easyo.babysitter_ham"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "571714783418-5f3j4et9v42ufqhhtnvgdvl1b0bng32i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.easyo.babysitter_ham",
+            "certificate_hash": "2696e1f79ec9e05dfe53f5ee24cf1e805c7e47ba"
+          }
+        },
+        {
+          "client_id": "571714783418-s4r9qrvg7f2dkpl9jcfmc578mokb6kdm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPTQ5DQXS3dz1SI5aPN3Dsgu11OUSE-9c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "571714783418-s4r9qrvg7f2dkpl9jcfmc578mokb6kdm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "571714783418-7vqc3i8lbgboap6o4ns8sm8oo3055d32.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.easyo.babysitterHam"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
