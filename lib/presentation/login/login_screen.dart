@@ -1,10 +1,63 @@
+import 'package:babysitter_ham/viewmodel/login_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends ConsumerState<LoginScreen>
+    with TickerProviderStateMixin {
+  @override
   Widget build(BuildContext context) {
+    final loginViewModel = ref.watch(loginViewModelProvider);
+
+    ref.listen<AsyncValue<void>>(
+        loginViewModelProvider, (previousState, nextState) {
+      if (nextState.hasError && !nextState.isLoading) {
+        // 처리 실패 시
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Row(
+              children: [
+                Icon(Icons.check_circle, color: Colors.white),
+                SizedBox(width: 8),
+                Text('Google 로그인 실패!'),
+              ],
+            ),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10)),
+          ),
+        );
+      } else if (previousState is AsyncLoading && !nextState.isLoading &&
+          !nextState.hasError) {
+        // 처리 성공 시
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Row(
+              children: [
+                Icon(Icons.check_circle, color: Colors.white),
+                SizedBox(width: 8),
+                Text('Google 로그인 성공!'),
+              ],
+            ),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10)),
+          ),
+        );
+        // slideNavigateStateful(context, HomeScreen(), deleteStack: true);
+      }
+    });
+
     return Scaffold(
       backgroundColor: Colors.lightBlue[50],
       body: SafeArea(
@@ -68,11 +121,7 @@ class LoginScreen extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    Icon(
-                      Icons.favorite,
-                      color: Colors.pink[300],
-                      size: 32,
-                    ),
+                    Icon(Icons.favorite, color: Colors.pink[300], size: 32),
                     SizedBox(height: 16),
                     Text(
                       '初めての育児、AIがサポートします！',
@@ -128,22 +177,9 @@ class LoginScreen extends StatelessWidget {
                     splashColor: Colors.blue[50],
                     highlightColor: Colors.blue,
                     onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Row(
-                            children: [
-                              Icon(Icons.check_circle, color: Colors.white),
-                              SizedBox(width: 12),
-                              Text('ログインシミュレーション成功！（Firebase未接続）'),
-                            ],
-                          ),
-                          backgroundColor: Colors.green[600],
-                          behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      );
+                      ref
+                          .read(loginViewModelProvider.notifier)
+                          .signInWithGoogle();
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),

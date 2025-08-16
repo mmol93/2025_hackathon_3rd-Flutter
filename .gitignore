@@ -141,3 +141,6 @@ app.*.symbols
 !.vscode/settings.json
 /devtools_options.yaml
 .env
+
+# Firebase
+firebase_options.dart
