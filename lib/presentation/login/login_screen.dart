@@ -1,3 +1,5 @@
+import 'package:babysitter_ham/navigator/open_navigator.dart';
+import 'package:babysitter_ham/presentation/home/home_screen.dart';
 import 'package:babysitter_ham/viewmodel/login_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,8 +15,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    final loginViewModel = ref.watch(loginViewModelProvider);
-
     ref.listen<AsyncValue<void>>(
         loginViewModelProvider, (previousState, nextState) {
       if (nextState.hasError && !nextState.isLoading) {
@@ -54,7 +54,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                 borderRadius: BorderRadius.circular(10)),
           ),
         );
-        // slideNavigateStateful(context, HomeScreen(), deleteStack: true);
+        slideNavigateStateful(context, HomeScreen(), deleteStack: true);
       }
     });
 
