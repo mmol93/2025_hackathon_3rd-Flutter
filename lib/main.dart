@@ -17,9 +17,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'SukuSuku',
       theme: ThemeData(
-        primarySwatch: Colors.blue, // AI 테마에 맞춘 블루 컬러
+        primarySwatch: Colors.blue,
       ),
-      home: LoginScreen(), // 로그인 화면으로 시작
+      home: LoginScreen(),
     );
   }
 }
