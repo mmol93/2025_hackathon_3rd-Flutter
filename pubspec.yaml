@@ -43,8 +43,15 @@ dependencies:
   firebase_core: ^3.14.0
   firebase_auth: ^5.6.0
 
+  # cloud_firestore - https://pub.dev/packages/cloud_firestore/install
+  cloud_firestore: ^5.6.12
+
   # google_sign_in - https://pub.dev/packages/google_sign_in/install
   google_sign_in: 6.3.0
+
+  # shared_preferences - https://pub.dev/packages/shared_preferences/install
+  shared_preferences: ^2.5.3
+  timezone: ^0.10.1
 
 dev_dependencies:
   flutter_test:

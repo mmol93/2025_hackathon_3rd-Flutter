@@ -5,21 +5,21 @@ import 'package:babysitter_ham/repository/login_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LoginViewModel extends AsyncNotifier<void> {
-  late final LoginRepository _authRepository;
+  late final LoginRepository _loginRepository;
 
   @override
   FutureOr<void> build() {
-    _authRepository = ref.watch(authRepositoryProvider);
+    _loginRepository = ref.watch(authRepositoryProvider);
   }
 
   Future<void> signInWithGoogle() async {
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(_authRepository.signInWithGoogle);
+    state = await AsyncValue.guard(_loginRepository.signInWithGoogle);
   }
 
   Future<void> signOut() async {
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(_authRepository.signOut);
+    state = await AsyncValue.guard(_loginRepository.signOut);
   }
 }
 

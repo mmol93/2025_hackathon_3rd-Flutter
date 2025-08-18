@@ -1,5 +1,4 @@
 class Diary {
-  final String id;
   final DateTime dateTime;
   final FeedingInfo? feedingInfo;
   final String description;
@@ -9,7 +8,6 @@ class Diary {
   final DateTime updatedAt;
 
   const Diary({
-    required this.id,
     required this.dateTime,
     this.feedingInfo,
     required this.description,
@@ -21,15 +19,12 @@ class Diary {
 
   factory Diary.fromJson(Map<String, dynamic> json) {
     return Diary(
-      id: json['id'] as String,
       dateTime: DateTime.fromMillisecondsSinceEpoch(json['dateTime'] as int),
       feedingInfo: json['feedingInfo'] != null
           ? FeedingInfo.fromJson(json['feedingInfo'] as Map<String, dynamic>)
           : null,
       description: json['diaryContent'] as String? ?? '',
-      poopInfo:
-          json['poopInfo'] !=
-              null // 추가된 부분
+      poopInfo: json['poopInfo'] != null
           ? PoopInfo.fromJson(json['poopInfo'] as Map<String, dynamic>)
           : null,
       sleepCount: json['sleepCount'] as int?,
@@ -40,11 +35,10 @@ class Diary {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'dateTime': dateTime.millisecondsSinceEpoch,
       'feedingInfo': feedingInfo?.toJson(),
       'diaryContent': description,
-      'poopInfo': poopInfo?.toJson(), // 추가된 부분
+      'poopInfo': poopInfo?.toJson(),
       'sleepCount': sleepCount,
       'createdAt': createdAt.millisecondsSinceEpoch,
       'updatedAt': updatedAt.millisecondsSinceEpoch,
@@ -52,7 +46,6 @@ class Diary {
   }
 
   Diary copyWith({
-    String? id,
     DateTime? dateTime,
     FeedingInfo? feedingInfo,
     String? diaryContent,
@@ -62,12 +55,10 @@ class Diary {
     DateTime? updatedAt,
   }) {
     return Diary(
-      id: id ?? this.id,
       dateTime: dateTime ?? this.dateTime,
       feedingInfo: feedingInfo ?? this.feedingInfo,
       description: diaryContent ?? this.description,
       poopInfo: poopInfo ?? this.poopInfo,
-      // 추가된 부분
       sleepCount: sleepCount ?? this.sleepCount,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -78,11 +69,10 @@ class Diary {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     return other is Diary &&
-        other.id == id &&
         other.dateTime == dateTime &&
         other.feedingInfo == feedingInfo &&
         other.description == description &&
-        other.poopInfo == poopInfo && // 추가된 부분
+        other.poopInfo == poopInfo &&
         other.sleepCount == sleepCount &&
         other.createdAt == createdAt &&
         other.updatedAt == updatedAt;
@@ -91,7 +81,6 @@ class Diary {
   @override
   int get hashCode {
     return Object.hash(
-      id,
       dateTime,
       feedingInfo,
       description,
@@ -104,9 +93,28 @@ class Diary {
 
   @override
   String toString() {
-    return 'Diary(id: $id, dateTime: $dateTime, feedingInfo: $feedingInfo, '
+    return 'Diary(dateTime: $dateTime, feedingInfo: $feedingInfo, '
         'description: $description, poopInfo: $poopInfo, sleepCount: $sleepCount, '
         'createdAt: $createdAt, updatedAt: $updatedAt)';
+  }
+
+  // 팩토리 생성자들
+  static Diary createForToday({
+    FeedingInfo? feedingInfo,
+    required String description,
+    PoopInfo? poopInfo,
+    int? sleepCount,
+  }) {
+    final now = DateTime.now();
+    return Diary(
+      dateTime: now,
+      feedingInfo: feedingInfo,
+      description: description,
+      poopInfo: poopInfo,
+      sleepCount: sleepCount,
+      createdAt: now,
+      updatedAt: now,
+    );
   }
 }
 
