@@ -15,9 +15,9 @@ class FireStoreRepository {
   CollectionReference? get _userDiariesCollection {
     if (_currentUserId == null) return null;
     return _firestore
-        .collection(_collection)
-        .doc(_currentUserId)
-        .collection('entries');
+        .collection('users')
+        .doc(_currentUserId!)
+        .collection(_collection);
   }
 
   // 일기 저장
@@ -35,26 +35,6 @@ class FireStoreRepository {
     }
   }
 
-  // 특정 날짜 일기 조회
-  Future<Diary?> getDiaryByDate(DateTime date) async {
-    if (_userDiariesCollection == null) {
-      throw DiaryRepositoryException('사용자 인증이 필요합니다');
-    }
-
-    try {
-      final dateId = _formatDateAsId(date);
-      final doc = await _userDiariesCollection!.doc(dateId).get();
-
-      if (doc.exists && doc.data() != null) {
-        return Diary.fromJson(doc.data() as Map<String, dynamic>);
-      }
-      return null;
-    } catch (e) {
-      throw DiaryRepositoryException('일기 조회에 실패했습니다: $e');
-    }
-  }
-
-  // 모든 일기 조회(최신순)
   Future<List<Diary>> getAllDiaries() async {
     if (_userDiariesCollection == null) {
       throw DiaryRepositoryException('사용자 인증이 필요합니다');
