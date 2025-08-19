@@ -17,8 +17,7 @@ class _DiaryWidgetState extends ConsumerState<DiaryWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // true를 전달하여 초기 데이터 로딩
-    final diariesAsync = ref.watch(diaryViewmodelProvider(true));
+    final diariesStream = ref.watch(diaryStreamProvider);
 
     return Scaffold(
       backgroundColor: Colors.lightBlue[50],
@@ -35,12 +34,12 @@ class _DiaryWidgetState extends ConsumerState<DiaryWidget> {
         shadowColor: Colors.blue.withOpacity(0.1),
         actions: [
           IconButton(
-            onPressed: () => ref.refresh(diaryViewmodelProvider(true)),
+            onPressed: () => ref.refresh(diaryStreamProvider),
             icon: Icon(Icons.refresh, color: Colors.blue[600]),
           ),
         ],
       ),
-      body: diariesAsync.when(
+      body: diariesStream.when(
         data: (diaries) {
           if (diaries.isEmpty) {
             return _buildEmptyState();
@@ -130,7 +129,7 @@ class _DiaryWidgetState extends ConsumerState<DiaryWidget> {
           ),
           const SizedBox(height: 16),
           ElevatedButton(
-            onPressed: () => ref.refresh(diaryViewmodelProvider(true)),
+            onPressed: () => ref.refresh(diaryStreamProvider),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blue[600],
               foregroundColor: Colors.white,
@@ -145,7 +144,7 @@ class _DiaryWidgetState extends ConsumerState<DiaryWidget> {
   Widget _buildDiaryList(List<Diary> diaries) {
     return RefreshIndicator(
       onRefresh: () async {
-        ref.refresh(diaryViewmodelProvider(true));
+        ref.refresh(diaryStreamProvider);
       },
       child: ListView.builder(
         padding: const EdgeInsets.all(16),

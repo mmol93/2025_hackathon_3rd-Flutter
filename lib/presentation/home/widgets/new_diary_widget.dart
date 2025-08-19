@@ -59,7 +59,7 @@ class _DiaryWriteScreenState extends ConsumerState<NewDiaryWidget> {
   @override
   Widget build(BuildContext context) {
     // false를 전달하여 초기 데이터 로딩 안함
-    final saveState = ref.watch(diaryViewmodelProvider(false));
+    final diariesStream = ref.watch(diaryStreamProvider);
 
     return Scaffold(
       backgroundColor: Colors.lightBlue[50],
@@ -78,7 +78,7 @@ class _DiaryWriteScreenState extends ConsumerState<NewDiaryWidget> {
         actions: [
           Container(
             margin: EdgeInsets.only(right: 16),
-            child: saveState.isLoading
+            child: diariesStream.isLoading
                 ? SizedBox(
               width: 20,
               height: 20,
@@ -614,7 +614,7 @@ class _DiaryWriteScreenState extends ConsumerState<NewDiaryWidget> {
 
     try {
       // false를 전달하여 초기 데이터 로딩하지 않는 viewmodel 사용
-      final viewmodel = ref.read(diaryViewmodelProvider(false).notifier);
+      final viewmodel = ref.read(diaryStreamProvider.notifier);
 
       // UI 데이터를 Diary 모델로 변환
       final diary = _createDiaryFromInputs();
@@ -623,7 +623,7 @@ class _DiaryWriteScreenState extends ConsumerState<NewDiaryWidget> {
       await viewmodel.saveDiary(diary);
 
       // 저장 완료 후 상태 확인
-      final state = ref.read(diaryViewmodelProvider(false));
+      final state = ref.read(diaryStreamProvider);
 
       state.when(
         data: (_) {
