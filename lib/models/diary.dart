@@ -98,7 +98,6 @@ class Diary {
         'createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
-  // 팩토리 생성자들
   static Diary createForToday({
     FeedingInfo? feedingInfo,
     required String description,

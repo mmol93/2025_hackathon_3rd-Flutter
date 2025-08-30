@@ -1,3 +1,4 @@
+import 'package:babysitter_ham/models/baby_info.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -6,18 +7,30 @@ import '../models/diary.dart';
 class FireStoreRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final String _collection = 'diaries';
+  final String _diaryCollectionName = 'diaries';
+  final String _settingCollectionName = "setting";
+  final String _babyInfoDocName = "baby_info";
 
   // 현재 사용자 ID 가져오기
   String? get _currentUserId => _auth.currentUser?.uid;
 
-  // 사용자별 컬렉션 참조
+  // 사용자별 육아일기(diary) 컬렉션 참조
   CollectionReference? get _userDiariesCollection {
     if (_currentUserId == null) return null;
     return _firestore
         .collection('users')
         .doc(_currentUserId!)
-        .collection(_collection);
+        .collection(_diaryCollectionName);
+  }
+
+  // 사용자별 아기 정보(baby_info) 컬렉션 참조
+  DocumentReference? get _userBabyInfoDocRef {
+    if (_currentUserId == null) return null;
+    return _firestore
+        .collection('users')
+        .doc(_currentUserId!)
+        .collection(_settingCollectionName)
+        .doc(_babyInfoDocName);
   }
 
   // 일기 저장
@@ -35,6 +48,20 @@ class FireStoreRepository {
     }
   }
 
+  // 아기 정보 저장
+  Future<void> saveBabyInfo(BabyInfo babyInfo) async {
+    if (_userBabyInfoDocRef == null) {
+      throw BabyInfoRepositoryException('사용자 인증이 필요합니다');
+    }
+
+    try {
+      await _userBabyInfoDocRef!.set(babyInfo.toJson());
+    } catch (e) {
+      throw BabyInfoRepositoryException('아기 정보 저장에 실패했습니다: $e');
+    }
+  }
+
+  // 작성한 모든 다이어리 정보 가져오기
   Future<List<Diary>> getAllDiaries() async {
     if (_userDiariesCollection == null) {
       throw DiaryRepositoryException('사용자 인증이 필요합니다');
@@ -105,6 +132,25 @@ class FireStoreRepository {
     }
   }
 
+  // 실시간 아기 정보 스트림
+  Stream<BabyInfo> getBabyInfoStream() {
+    if (_userBabyInfoDocRef == null) {
+      throw BabyInfoRepositoryException('사용자 인증이 필요합니다');
+    }
+
+    try {
+      return _userBabyInfoDocRef!.snapshots().map((doc) {
+        if (doc.exists) {
+          return BabyInfo.fromJson(doc.data() as Map<String, dynamic>);
+        } else {
+          return BabyInfo(birthday: '', sex: '', weight: '');
+        }
+      });
+    } catch (e) {
+      throw BabyInfoRepositoryException('아기 정보 스트림 조회에 실패했습니다: $e');
+    }
+  }
+
   // 특정 날짜 일기 존재 여부 확인
   Future<bool> diaryExistsForDate(DateTime date) async {
     if (_userDiariesCollection == null) {
@@ -133,6 +179,15 @@ class DiaryRepositoryException implements Exception {
   final String message;
 
   DiaryRepositoryException(this.message);
+
+  @override
+  String toString() => 'DiaryRepositoryException: $message';
+}
+
+class BabyInfoRepositoryException implements Exception {
+  final String message;
+
+  BabyInfoRepositoryException(this.message);
 
   @override
   String toString() => 'DiaryRepositoryException: $message';
