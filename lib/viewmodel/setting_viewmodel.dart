@@ -17,7 +17,7 @@ class BabyInfoStreamNotifier extends StreamNotifier<BabyInfo> {
   }
 
   // 저장
-  Future<void> saveDiary(BabyInfo babyInfo) async {
+  Future<void> saveBabyInfo(BabyInfo babyInfo) async {
     await fireStoreRepository.saveBabyInfo(babyInfo);
   }
 }
