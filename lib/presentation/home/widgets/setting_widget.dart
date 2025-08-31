@@ -1,4 +1,5 @@
 import 'package:babysitter_ham/models/baby_info.dart';
+import 'package:babysitter_ham/presentation/setting/baby_info_dialog.dart';
 import 'package:babysitter_ham/viewmodel/setting_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -82,9 +83,11 @@ class _SettingWidgetState extends ConsumerState<SettingWidget> {
                   ),
                 ),
                 ElevatedButton.icon(
-                  onPressed: () {
-                    // 수정 기능은 아직 구현하지 않음
-                  },
+                  onPressed: () => showEditBabyInfoDialog(
+                    context: context,
+                    ref: ref,
+                    currentBabyInfo: babyInfo,
+                  ),
                   icon: const Icon(Icons.edit, size: 16),
                   label: const Text('編集'),
                   style: ElevatedButton.styleFrom(
