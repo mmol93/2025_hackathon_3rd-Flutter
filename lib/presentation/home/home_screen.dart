@@ -1,6 +1,6 @@
 import 'package:babysitter_ham/presentation/home/tap_notifier.dart';
+import 'package:babysitter_ham/presentation/home/widgets/analysis_widget.dart';
 import 'package:babysitter_ham/presentation/home/widgets/diary_widget.dart';
-import 'package:babysitter_ham/presentation/home/widgets/home_widget.dart';
 import 'package:babysitter_ham/presentation/home/widgets/setting_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,7 +37,7 @@ class HomeScreen extends ConsumerWidget {
       ),
       body: IndexedStack(
         index: currentIndex,
-        children: [HomeWidget(), DiaryWidget(), SettingWidget()],
+        children: [AnalysisWidget(), DiaryWidget(), SettingWidget()],
       ),
     );
   }
