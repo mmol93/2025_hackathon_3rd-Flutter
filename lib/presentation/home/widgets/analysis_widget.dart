@@ -450,33 +450,6 @@ class AnalysisWidget extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 24),
-          // 진행률 바
-          Container(
-            height: 8,
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: FractionallySizedBox(
-              alignment: Alignment.centerLeft,
-              widthFactor: confidenceScore / 100,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(4),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.white.withOpacity(0.3),
-                      spreadRadius: 0,
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
         ],
       ),
     );
