@@ -1,3 +1,4 @@
+import 'package:babysitter_ham/models/analysis.dart';
 import 'package:babysitter_ham/models/baby_info.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,6 +11,7 @@ class FireStoreRepository {
   final String _diaryCollectionName = 'diaries';
   final String _settingCollectionName = "setting";
   final String _babyInfoDocName = "baby_info";
+  final String _analysisCollectionName = "analysis";
 
   // 현재 사용자 ID 가져오기
   String? get _currentUserId => _auth.currentUser?.uid;
@@ -33,10 +35,18 @@ class FireStoreRepository {
         .doc(_babyInfoDocName);
   }
 
+  CollectionReference? get _userAnalysisCollection {
+    if (_currentUserId == null) return null;
+    return _firestore
+        .collection('users')
+        .doc(_currentUserId!)
+        .collection(_analysisCollectionName);
+  }
+
   // 일기 저장
   Future<void> saveDiary(Diary diary) async {
     if (_userDiariesCollection == null) {
-      throw DiaryRepositoryException('사용자 인증이 필요합니다');
+      throw DiaryException('사용자 인증이 필요합니다');
     }
 
     try {
@@ -44,27 +54,27 @@ class FireStoreRepository {
 
       await _userDiariesCollection!.doc(dateId).set(diary.toJson());
     } catch (e) {
-      throw DiaryRepositoryException('일기 저장에 실패했습니다: $e');
+      throw DiaryException('일기 저장에 실패했습니다: $e');
     }
   }
 
   // 아기 정보 저장
   Future<void> saveBabyInfo(BabyInfo babyInfo) async {
     if (_userBabyInfoDocRef == null) {
-      throw BabyInfoRepositoryException('사용자 인증이 필요합니다');
+      throw BabyInfoException('사용자 인증이 필요합니다');
     }
 
     try {
       await _userBabyInfoDocRef!.set(babyInfo.toJson());
     } catch (e) {
-      throw BabyInfoRepositoryException('아기 정보 저장에 실패했습니다: $e');
+      throw BabyInfoException('아기 정보 저장에 실패했습니다: $e');
     }
   }
 
   // 작성한 모든 다이어리 정보 가져오기
   Future<List<Diary>> getAllDiaries() async {
     if (_userDiariesCollection == null) {
-      throw DiaryRepositoryException('사용자 인증이 필요합니다');
+      throw DiaryException('사용자 인증이 필요합니다');
     }
 
     try {
@@ -76,14 +86,43 @@ class FireStoreRepository {
           .map((doc) => Diary.fromJson(doc.data() as Map<String, dynamic>))
           .toList();
     } catch (e) {
-      throw DiaryRepositoryException('일기 목록 조회에 실패했습니다: $e');
+      throw DiaryException('일기 목록 조회에 실패했습니다: $e');
     }
   }
+
+  // 최근 분석 결과 가져오기
+  // 리포지토리 수정
+  Future<Analysis?> getRecentAnalysis() async {
+    if (_userAnalysisCollection == null) {
+      throw AnalysisException('사용자 인증이 필요합니다');
+    }
+
+    try {
+      final querySnapshot = await _userAnalysisCollection!
+          .orderBy(FieldPath.documentId, descending: true)
+          .limit(1)
+          .get();
+
+      if (querySnapshot.docs.isEmpty) {
+        return null;
+      }
+
+      final aiResponse = AiResponse.fromJson(
+          querySnapshot.docs.first.data() as Map<String, dynamic>
+      );
+
+      return aiResponse.analysis;
+    } catch (e) {
+      throw AnalysisException('AI 분석 결과 조회에 실패했습니다: $e');
+    }
+  }
+
+
 
   // 일기 업데이트
   Future<void> updateDiary(Diary diary) async {
     if (_userDiariesCollection == null) {
-      throw DiaryRepositoryException('사용자 인증이 필요합니다');
+      throw DiaryException('사용자 인증이 필요합니다');
     }
 
     try {
@@ -92,28 +131,28 @@ class FireStoreRepository {
 
       await _userDiariesCollection!.doc(dateId).update(updatedDiary.toJson());
     } catch (e) {
-      throw DiaryRepositoryException('일기 업데이트에 실패했습니다: $e');
+      throw DiaryException('일기 업데이트에 실패했습니다: $e');
     }
   }
 
   // 일기 삭제
   Future<void> deleteDiaryByDate(DateTime date) async {
     if (_userDiariesCollection == null) {
-      throw DiaryRepositoryException('사용자 인증이 필요합니다');
+      throw DiaryException('사용자 인증이 필요합니다');
     }
 
     try {
       final dateId = _formatDateAsId(date);
       await _userDiariesCollection!.doc(dateId).delete();
     } catch (e) {
-      throw DiaryRepositoryException('일기 삭제에 실패했습니다: $e');
+      throw DiaryException('일기 삭제에 실패했습니다: $e');
     }
   }
 
   // 실시간 일기 목록 스트림
   Stream<List<Diary>> getDiariesStream() {
     if (_userDiariesCollection == null) {
-      throw DiaryRepositoryException('사용자 인증이 필요합니다');
+      throw DiaryException('사용자 인증이 필요합니다');
     }
 
     try {
@@ -128,14 +167,14 @@ class FireStoreRepository {
                 .toList();
           });
     } catch (e) {
-      throw DiaryRepositoryException('일기 스트림 조회에 실패했습니다: $e');
+      throw DiaryException('일기 스트림 조회에 실패했습니다: $e');
     }
   }
 
   // 실시간 아기 정보 스트림
   Stream<BabyInfo> getBabyInfoStream() {
     if (_userBabyInfoDocRef == null) {
-      throw BabyInfoRepositoryException('사용자 인증이 필요합니다');
+      throw BabyInfoException('사용자 인증이 필요합니다');
     }
 
     try {
@@ -147,14 +186,14 @@ class FireStoreRepository {
         }
       });
     } catch (e) {
-      throw BabyInfoRepositoryException('아기 정보 스트림 조회에 실패했습니다: $e');
+      throw BabyInfoException('아기 정보 스트림 조회에 실패했습니다: $e');
     }
   }
 
   // 특정 날짜 일기 존재 여부 확인
   Future<bool> diaryExistsForDate(DateTime date) async {
     if (_userDiariesCollection == null) {
-      throw DiaryRepositoryException('사용자 인증이 필요합니다');
+      throw DiaryException('사용자 인증이 필요합니다');
     }
 
     try {
@@ -162,7 +201,7 @@ class FireStoreRepository {
       final doc = await _userDiariesCollection!.doc(dateId).get();
       return doc.exists;
     } catch (e) {
-      throw DiaryRepositoryException('일기 존재 확인에 실패했습니다: $e');
+      throw DiaryException('일기 존재 확인에 실패했습니다: $e');
     }
   }
 
@@ -175,20 +214,29 @@ class FireStoreRepository {
 }
 
 // 커스텀 예외 클래스
-class DiaryRepositoryException implements Exception {
+class DiaryException implements Exception {
   final String message;
 
-  DiaryRepositoryException(this.message);
+  DiaryException(this.message);
 
   @override
   String toString() => 'DiaryRepositoryException: $message';
 }
 
-class BabyInfoRepositoryException implements Exception {
+class BabyInfoException implements Exception {
   final String message;
 
-  BabyInfoRepositoryException(this.message);
+  BabyInfoException(this.message);
 
   @override
-  String toString() => 'DiaryRepositoryException: $message';
+  String toString() => 'BabyInfoException: $message';
+}
+
+class AnalysisException implements Exception {
+  final String message;
+
+  AnalysisException(this.message);
+
+  @override
+  String toString() => 'AnalysisException: $message';
 }
