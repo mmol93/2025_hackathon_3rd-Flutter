@@ -91,8 +91,7 @@ class FireStoreRepository {
   }
 
   // 최근 분석 결과 가져오기
-  // 리포지토리 수정
-  Future<Analysis?> getRecentAnalysis() async {
+  Future<AiResponse?> getRecentAnalysis() async {
     if (_userAnalysisCollection == null) {
       throw AnalysisException('사용자 인증이 필요합니다');
     }
@@ -107,16 +106,14 @@ class FireStoreRepository {
         return null;
       }
 
-      final aiResponse = AiResponse.fromJson(
+      // AiResponse로 반환
+      return AiResponse.fromJson(
           querySnapshot.docs.first.data() as Map<String, dynamic>
       );
-
-      return aiResponse.analysis;
     } catch (e) {
       throw AnalysisException('AI 분석 결과 조회에 실패했습니다: $e');
     }
   }
-
 
 
   // 일기 업데이트
