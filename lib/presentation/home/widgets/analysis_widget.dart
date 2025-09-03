@@ -1,4 +1,5 @@
 import 'package:babysitter_ham/models/analysis.dart';
+import 'package:babysitter_ham/presentation/common_widget/common_header_card.dart';
 import 'package:babysitter_ham/viewmodel/analysis_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -93,66 +94,53 @@ class AnalysisWidget extends ConsumerWidget {
 
   Widget _buildEmptyState(BuildContext context) {
     return Center(
-      child: Container(
-        margin: const EdgeInsets.all(24),
-        padding: const EdgeInsets.all(32),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(28),
-          border: Border.all(
-            color: Colors.blue[100]!,
-            width: 1,
+      child: CommonCardWidget.buildBasicCard(
+        borderRadius: 28,
+        child: Container(
+          margin: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.blue[50],
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.psychology_outlined,
+                  size: 48,
+                  color: Colors.blue[600],
+                ),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                'まだ分析結果がありません',
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .headlineSmall
+                    ?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.blue[800],
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                '赤ちゃんの日記を作成すると\nAI分析結果が表示されます',
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .bodyLarge
+                    ?.copyWith(
+                  color: Colors.grey[600],
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.blue.withOpacity(0.08),
-              spreadRadius: 0,
-              blurRadius: 20,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: Colors.blue[50],
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.psychology_outlined,
-                size: 48,
-                color: Colors.blue[600],
-              ),
-            ),
-            const SizedBox(height: 24),
-            Text(
-              'まだ分析結果がありません',
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .headlineSmall
-                  ?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: Colors.blue[800],
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 12),
-            Text(
-              '赤ちゃんの日記を作成すると\nAI分析結果が表示されます',
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .bodyLarge
-                  ?.copyWith(
-                color: Colors.grey[600],
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
         ),
       ),
     );
@@ -160,80 +148,76 @@ class AnalysisWidget extends ConsumerWidget {
 
   Widget _buildErrorState(String error, WidgetRef ref, BuildContext context) {
     return Center(
-      child: Container(
-        margin: const EdgeInsets.all(24),
-        padding: const EdgeInsets.all(32),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(28),
-          border: Border.all(
-            color: Colors.red[100]!,
-            width: 1,
+      child: CommonCardWidget.buildBasicCard(
+        borderRadius: 28,
+        border: Border.all(color: Colors.red[100]!, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.red.withOpacity(0.08),
+            spreadRadius: 0,
+            blurRadius: 20,
+            offset: const Offset(0, 8),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.red.withOpacity(0.08),
-              spreadRadius: 0,
-              blurRadius: 20,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: Colors.red[50],
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.error_outline,
-                size: 48,
-                color: Colors.red[400],
-              ),
-            ),
-            const SizedBox(height: 24),
-            Text(
-              'エラーが発生しました',
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .headlineSmall
-                  ?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: Colors.red[600],
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 12),
-            Text(
-              error,
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(
-                color: Colors.grey[600],
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 24),
-            FilledButton(
-              onPressed: () => ref.read(analysisProvider.notifier).refresh(),
-              style: FilledButton.styleFrom(
-                backgroundColor: Colors.red[600],
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 24, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+        ],
+        child: Container(
+          margin: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.red[50],
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.error_outline,
+                  size: 48,
+                  color: Colors.red[400],
                 ),
               ),
-              child: Text('再試行'),
-            ),
-          ],
+              const SizedBox(height: 24),
+              Text(
+                'エラーが発生しました',
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .headlineSmall
+                    ?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.red[600],
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                error,
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(
+                  color: Colors.grey[600],
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              FilledButton(
+                onPressed: () => ref.read(analysisProvider.notifier).refresh(),
+                style: FilledButton.styleFrom(
+                  backgroundColor: Colors.red[600],
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                child: Text('再試行'),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -257,7 +241,7 @@ class AnalysisWidget extends ConsumerWidget {
             const SizedBox(height: 24),
 
             // AI 조언
-            _buildContentCard(
+            CommonCardWidget.buildContentCard(
               title: 'AIアドバイス',
               content: aiResponse.analysis.advice,
               icon: Icons.lightbulb_outline,
@@ -268,7 +252,7 @@ class AnalysisWidget extends ConsumerWidget {
             const SizedBox(height: 20),
 
             // 성장 패턴
-            _buildContentCard(
+            CommonCardWidget.buildContentCard(
               title: '成長パターン',
               content: aiResponse.analysis.growthPattern,
               icon: Icons.trending_up,
@@ -285,7 +269,7 @@ class AnalysisWidget extends ConsumerWidget {
             const SizedBox(height: 20),
 
             // 권장사항
-            _buildContentCard(
+            CommonCardWidget.buildContentCard(
               title: '推奨事項',
               content: aiResponse.analysis.recommendations,
               icon: Icons.recommend,
@@ -296,7 +280,7 @@ class AnalysisWidget extends ConsumerWidget {
             const SizedBox(height: 20),
 
             // 위험 요소
-            _buildContentCard(
+            CommonCardWidget.buildContentCard(
               title: 'リスク要因',
               content: aiResponse.analysis.riskFactors,
               icon: Icons.warning_amber_outlined,
@@ -330,24 +314,8 @@ class AnalysisWidget extends ConsumerWidget {
       scoreIcon = Icons.warning;
     }
 
-    return Container(
-      padding: const EdgeInsets.all(28),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.blue[400]!, Colors.blue[600]!],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(32),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.blue.withOpacity(0.25),
-            spreadRadius: 0,
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
+    return CommonCardWidget.buildSpecialCard(
+      gradientColors: [Colors.blue[400]!, Colors.blue[600]!],
       child: Column(
         children: [
           Row(
@@ -455,264 +423,91 @@ class AnalysisWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildContentCard({
-    required String title,
-    required String content,
-    required IconData icon,
-    required BuildContext context,
-    required List<Color> gradientColors,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: Colors.grey.withOpacity(0.1),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.08),
-            spreadRadius: 0,
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 헤더
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: gradientColors,
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(24),
-                topRight: Radius.circular(24),
-              ),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        spreadRadius: 0,
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Icon(
-                    icon,
-                    size: 24,
-                    color: gradientColors[1],
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Text(
-                    title,
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .titleLarge
-                        ?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // 내용
-          Padding(
-            padding: const EdgeInsets.all(24),
-            child: Text(
-              content,
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .bodyLarge
-                  ?.copyWith(
-                color: Colors.grey[800],
-                height: 1.6,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildPriorityActionsCard(List<String> actions, BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: Colors.grey.withOpacity(0.1),
-          width: 1,
+    final actionsBody = Column(
+      children: actions
+          .asMap()
+          .entries
+          .map((entry) {
+        final index = entry.key;
+        final action = entry.value;
+        return Container(
+          margin: EdgeInsets.only(bottom: index == actions.length - 1 ? 0 : 16),
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.purple[50],
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: Colors.purple[100]!,
+              width: 1,
+            ),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: Colors.purple[100],
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: Colors.purple[300]!,
+                    width: 2,
+                  ),
+                ),
+                child: Icon(
+                  Icons.check_rounded,
+                  size: 18,
+                  color: Colors.purple[600],
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text(
+                  action,
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.copyWith(
+                    color: Colors.grey[800],
+                    height: 1.5,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      }).toList(),
+    );
+
+    return CommonCardWidget.buildCustomBodyCard(
+      title: '優先行動項目',
+      body: actionsBody,
+      icon: Icons.checklist_rtl,
+      context: context,
+      gradientColors: [Colors.purple[300]!, Colors.purple[500]!],
+      headerSuffix: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 8,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.08),
-            spreadRadius: 0,
-            blurRadius: 20,
-            offset: const Offset(0, 8),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Text(
+          '${actions.length}項目',
+          style: Theme
+              .of(context)
+              .textTheme
+              .labelMedium
+              ?.copyWith(
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 헤더
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.purple[300]!, Colors.purple[500]!],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(24),
-                topRight: Radius.circular(24),
-              ),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        spreadRadius: 0,
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Icon(
-                    Icons.checklist_rtl,
-                    size: 24,
-                    color: Colors.purple[500],
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Text(
-                    '優先行動項目',
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .titleLarge
-                        ?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Text(
-                    '${actions.length}項目',
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .labelMedium
-                        ?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // 체크리스트
-          Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              children: actions
-                  .asMap()
-                  .entries
-                  .map((entry) {
-                final index = entry.key;
-                final action = entry.value;
-                return Container(
-                  margin: EdgeInsets.only(
-                      bottom: index == actions.length - 1 ? 0 : 16),
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.purple[50],
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: Colors.purple[100]!,
-                      width: 1,
-                    ),
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: 28,
-                        height: 28,
-                        decoration: BoxDecoration(
-                          color: Colors.purple[100],
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: Colors.purple[300]!,
-                            width: 2,
-                          ),
-                        ),
-                        child: Icon(
-                          Icons.check_rounded,
-                          size: 18,
-                          color: Colors.purple[600],
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Text(
-                          action,
-                          style: Theme
-                              .of(context)
-                              .textTheme
-                              .bodyLarge
-                              ?.copyWith(
-                            color: Colors.grey[800],
-                            height: 1.5,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
