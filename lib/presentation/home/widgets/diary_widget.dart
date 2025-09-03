@@ -19,51 +19,35 @@ class _DiaryWidgetState extends ConsumerState<DiaryWidget> {
   Widget build(BuildContext context) {
     final diariesStream = ref.watch(diaryStreamProvider);
 
-    return Scaffold(
-      backgroundColor: Colors.lightBlue[50],
-      appBar: AppBar(
-        title: Text(
-          '育児日記',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.blue[800],
-          ),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 2,
-        shadowColor: Colors.blue.withOpacity(0.1),
-        actions: [
-          IconButton(
-            onPressed: () => ref.refresh(diaryStreamProvider),
-            icon: Icon(Icons.refresh, color: Colors.blue[600]),
-          ),
-        ],
-      ),
-      body: diariesStream.when(
-        data: (diaries) {
-          if (diaries.isEmpty) {
-            return _buildEmptyState();
-          }
-          return _buildDiaryList(diaries);
-        },
-        loading: () =>
-            Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue[600]!),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.lightBlue[50],
+        body: diariesStream.when(
+          data: (diaries) {
+            if (diaries.isEmpty) {
+              return _buildEmptyState();
+            }
+            return _buildDiaryList(diaries);
+          },
+          loading: () =>
+              Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.blue[600]!),
+                ),
               ),
-            ),
-        error: (error, stackTrace) => _buildErrorState(error.toString()),
+          error: (error, stackTrace) => _buildErrorState(error.toString()),
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            slideNavigateStateful(context, NewDiaryWidget());
+          },
+          icon: const Icon(Icons.add),
+          label: const Text('日記作成'),
+          backgroundColor: Colors.blue[600],
+          foregroundColor: Colors.white,
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          slideNavigateStateful(context, NewDiaryWidget());
-        },
-        icon: const Icon(Icons.add),
-        label: const Text('日記作成'),
-        backgroundColor: Colors.blue[600],
-        foregroundColor: Colors.white,
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 

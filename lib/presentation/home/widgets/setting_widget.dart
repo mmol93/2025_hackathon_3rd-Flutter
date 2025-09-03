@@ -16,37 +16,27 @@ class _SettingWidgetState extends ConsumerState<SettingWidget> {
   Widget build(BuildContext context) {
     final babyInfoStream = ref.watch(babyInfoStreamProvider);
 
-    return Scaffold(
-      backgroundColor: Colors.lightBlue[50],
-      appBar: AppBar(
-        title: Text(
-          '設定',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.blue[800],
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.lightBlue[50],
+        body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // BabyInfo 섹션
+              babyInfoStream.when(
+                data: (babyInfo) => _buildBabyInfoCard(babyInfo),
+                loading: () => _buildLoadingCard(),
+                error: (error, stackTrace) => _buildErrorCard(error.toString()),
+              ),
+
+              const SizedBox(height: 20),
+
+              // 로그아웃 버튼
+              _buildLogoutButton(),
+            ],
           ),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 2,
-        shadowColor: Colors.blue.withOpacity(0.1),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // BabyInfo 섹션
-            babyInfoStream.when(
-              data: (babyInfo) => _buildBabyInfoCard(babyInfo),
-              loading: () => _buildLoadingCard(),
-              error: (error, stackTrace) => _buildErrorCard(error.toString()),
-            ),
-
-            const SizedBox(height: 20),
-
-            // 로그아웃 버튼
-            _buildLogoutButton(),
-          ],
         ),
       ),
     );
