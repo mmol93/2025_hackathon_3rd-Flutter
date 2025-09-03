@@ -11,83 +11,44 @@ class AnalysisWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final analysisAsync = ref.watch(analysisProvider);
 
-    return Scaffold(
-      backgroundColor: Colors.lightBlue[50],
-      appBar: AppBar(
-        title: Text(
-          'AI分析結果',
-          style: Theme
-              .of(context)
-              .textTheme
-              .headlineSmall
-              ?.copyWith(
-            fontWeight: FontWeight.w600,
-            color: Colors.blue[800],
-          ),
-        ),
-        backgroundColor: Colors.white,
-        surfaceTintColor: Colors.blue[50],
-        elevation: 0,
-        scrolledUnderElevation: 2,
-        shadowColor: Colors.blue.withOpacity(0.1),
-        actions: [
-          FilledButton.tonal(
-            onPressed: () => ref.read(analysisProvider.notifier).refresh(),
-            style: FilledButton.styleFrom(
-              backgroundColor: Colors.blue[100],
-              foregroundColor: Colors.blue[700],
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.refresh, size: 18),
-                const SizedBox(width: 4),
-                Text('更新', style: Theme
-                    .of(context)
-                    .textTheme
-                    .labelMedium),
-              ],
-            ),
-          ),
-          const SizedBox(width: 16),
-        ],
-      ),
-      body: analysisAsync.when(
-        data: (aiResponse) {
-          if (aiResponse == null) {
-            return _buildEmptyState(context);
-          }
-          return _buildAnalysisContent(aiResponse, ref, context);
-        },
-        loading: () => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue[600]!),
-                strokeWidth: 3,
-              ),
-              const SizedBox(height: 24),
-              Text(
-                '分析結果を読み込み中...',
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .bodyLarge
-                    ?.copyWith(
-                  color: Colors.blue[600],
-                  fontWeight: FontWeight.w500,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.lightBlue[50],
+        body: analysisAsync.when(
+          data: (aiResponse) {
+            if (aiResponse == null) {
+              return _buildEmptyState(context);
+            }
+            return _buildAnalysisContent(aiResponse, ref, context);
+          },
+          loading: () =>
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                          Colors.blue[600]!),
+                      strokeWidth: 3,
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      '分析結果を読み込み中...',
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .bodyLarge
+                          ?.copyWith(
+                        color: Colors.blue[600],
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+          error: (error, stackTrace) =>
+              _buildErrorState(error.toString(), ref, context),
         ),
-        error: (error, stackTrace) =>
-            _buildErrorState(error.toString(), ref, context),
       ),
     );
   }
@@ -235,64 +196,97 @@ class AnalysisWidget extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // AI의 아기 상태 점수 표시
+            // AI의 아기 상태 점수 표시 (항상 표시)
             _buildConfidenceScoreCard(aiResponse.confidenceScore, context),
 
-            const SizedBox(height: 24),
-
-            // AI 조언
-            CommonCardWidget.buildContentCard(
-              title: 'AIアドバイス',
-              content: aiResponse.analysis.advice,
-              icon: Icons.lightbulb_outline,
-              context: context,
-              gradientColors: [Colors.orange[300]!, Colors.orange[500]!],
-            ),
-
-            const SizedBox(height: 20),
-
-            // 성장 패턴
-            CommonCardWidget.buildContentCard(
-              title: '成長パターン',
-              content: aiResponse.analysis.growthPattern,
-              icon: Icons.trending_up,
-              context: context,
-              gradientColors: [Colors.green[300]!, Colors.green[500]!],
-            ),
-
-            const SizedBox(height: 20),
-
-            // 우선 행동 항목
-            _buildPriorityActionsCard(
-                aiResponse.analysis.priorityActions, context),
-
-            const SizedBox(height: 20),
-
-            // 권장사항
-            CommonCardWidget.buildContentCard(
-              title: '推奨事項',
-              content: aiResponse.analysis.recommendations,
-              icon: Icons.recommend,
-              context: context,
-              gradientColors: [Colors.blue[300]!, Colors.blue[500]!],
-            ),
-
-            const SizedBox(height: 20),
-
-            // 위험 요소
-            CommonCardWidget.buildContentCard(
-              title: 'リスク要因',
-              content: aiResponse.analysis.riskFactors,
-              icon: Icons.warning_amber_outlined,
-              context: context,
-              gradientColors: [Colors.red[300]!, Colors.red[500]!],
-            ),
+            // 동적으로 카드들을 구성
+            ..._buildConditionalCards(aiResponse, context),
 
             const SizedBox(height: 40),
           ],
         ),
       ),
     );
+  }
+
+  // 조건부로 카드들을 생성하는 메서드
+  List<Widget> _buildConditionalCards(AiResponse aiResponse,
+      BuildContext context) {
+    List<Widget> cards = [];
+
+    // AI 조언
+    if (aiResponse.analysis.advice
+        .trim()
+        .isNotEmpty) {
+      cards.add(const SizedBox(height: 24));
+      cards.add(
+        CommonCardWidget.buildContentCard(
+          title: 'AIアドバイス',
+          content: aiResponse.analysis.advice,
+          icon: Icons.lightbulb_outline,
+          context: context,
+          gradientColors: [Colors.orange[300]!, Colors.orange[500]!],
+        ),
+      );
+    }
+
+    // 성장 패턴
+    if (aiResponse.analysis.growthPattern
+        .trim()
+        .isNotEmpty) {
+      cards.add(const SizedBox(height: 20));
+      cards.add(
+        CommonCardWidget.buildContentCard(
+          title: '成長パターン',
+          content: aiResponse.analysis.growthPattern,
+          icon: Icons.trending_up,
+          context: context,
+          gradientColors: [Colors.green[300]!, Colors.green[500]!],
+        ),
+      );
+    }
+
+    // 우선 행동 항목 (리스트가 비어있지 않은 경우에만 표시)
+    if (aiResponse.analysis.priorityActions.isNotEmpty) {
+      cards.add(const SizedBox(height: 20));
+      cards.add(
+        _buildPriorityActionsCard(aiResponse.analysis.priorityActions, context),
+      );
+    }
+
+    // 권장사항
+    if (aiResponse.analysis.recommendations
+        .trim()
+        .isNotEmpty) {
+      cards.add(const SizedBox(height: 20));
+      cards.add(
+        CommonCardWidget.buildContentCard(
+          title: '推奨事項',
+          content: aiResponse.analysis.recommendations,
+          icon: Icons.recommend,
+          context: context,
+          gradientColors: [Colors.blue[300]!, Colors.blue[500]!],
+        ),
+      );
+    }
+
+    // 위험 요소
+    if (aiResponse.analysis.riskFactors
+        .trim()
+        .isNotEmpty) {
+      cards.add(const SizedBox(height: 20));
+      cards.add(
+        CommonCardWidget.buildContentCard(
+          title: 'リスク要因',
+          content: aiResponse.analysis.riskFactors,
+          icon: Icons.warning_amber_outlined,
+          context: context,
+          gradientColors: [Colors.red[300]!, Colors.red[500]!],
+        ),
+      );
+    }
+
+    return cards;
   }
 
   Widget _buildConfidenceScoreCard(int confidenceScore, BuildContext context) {
