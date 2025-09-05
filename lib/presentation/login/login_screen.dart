@@ -25,7 +25,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               children: [
                 Icon(Icons.check_circle, color: Colors.white),
                 SizedBox(width: 8),
-                Text('Google 로그인 실패!'),
+                Text('ログイン失敗'),
               ],
             ),
             backgroundColor: Colors.red,
@@ -44,7 +44,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               children: [
                 Icon(Icons.check_circle, color: Colors.white),
                 SizedBox(width: 8),
-                Text('Google 로그인 성공!'),
+                Text('ログイン成功'),
               ],
             ),
             backgroundColor: Colors.green,
