@@ -196,10 +196,8 @@ class AnalysisWidget extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // AI의 아기 상태 점수 표시
+            // show Analysis result
             _buildConfidenceScoreCard(aiResponse.confidenceScore, context),
-
-            // Analysis 결과를 카드 위젯 형태로 표시
             ..._buildConditionalCards(aiResponse, context),
 
             const SizedBox(height: 40),
@@ -214,7 +212,7 @@ class AnalysisWidget extends ConsumerWidget {
       BuildContext context) {
     List<Widget> cards = [];
 
-    // AI 조언
+    // AIアドバイス
     if (aiResponse.analysis.advice
         .trim()
         .isNotEmpty) {
@@ -230,7 +228,7 @@ class AnalysisWidget extends ConsumerWidget {
       );
     }
 
-    // 성장 패턴
+    // 成長パターン
     if (aiResponse.analysis.growthPattern
         .trim()
         .isNotEmpty) {
@@ -246,7 +244,7 @@ class AnalysisWidget extends ConsumerWidget {
       );
     }
 
-    // 우선 행동 항목 (리스트가 비어있지 않은 경우에만 표시)
+    // 優先行動項目
     if (aiResponse.analysis.priorityActions.isNotEmpty) {
       cards.add(const SizedBox(height: 20));
       cards.add(
@@ -254,7 +252,7 @@ class AnalysisWidget extends ConsumerWidget {
       );
     }
 
-    // 권장사항
+    // 推奨事項
     if (aiResponse.analysis.recommendations
         .trim()
         .isNotEmpty) {
@@ -270,7 +268,7 @@ class AnalysisWidget extends ConsumerWidget {
       );
     }
 
-    // 위험 요소
+    // リスク要因
     if (aiResponse.analysis.riskFactors
         .trim()
         .isNotEmpty) {

@@ -11,7 +11,7 @@ class LoginRepository {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
-      if (googleUser == null) throw Exception('로그인을 취소 또는 실패했습니다.');
+      if (googleUser == null) throw Exception('ログインに失敗しました。');
 
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
@@ -22,7 +22,7 @@ class LoginRepository {
 
       await FirebaseAuth.instance.signInWithCredential(credential);
     } catch (e) {
-      throw Exception('구글 로그인에 실패했습니다.');
+      throw Exception('ログインに失敗しました。');
     }
   }
 
@@ -30,7 +30,7 @@ class LoginRepository {
     try {
       await _auth.signOut();
     } catch (e) {
-      throw Exception('로그아웃 실패');
+      throw Exception('ログアウト失敗');
     }
   }
 }

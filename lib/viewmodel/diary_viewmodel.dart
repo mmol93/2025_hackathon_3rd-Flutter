@@ -16,7 +16,6 @@ class DiaryStreamNotifier extends StreamNotifier<List<Diary>> {
     return fireStoreRepository.getDiariesStream();
   }
 
-  // 저장
   Future<void> saveDiary(Diary diary) async {
     await fireStoreRepository.saveDiary(diary);
   }

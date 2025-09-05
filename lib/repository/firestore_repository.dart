@@ -13,10 +13,9 @@ class FireStoreRepository {
   final String _babyInfoDocName = "baby_info";
   final String _analysisCollectionName = "analysis";
 
-  // 현재 사용자 ID 가져오기
   String? get _currentUserId => _auth.currentUser?.uid;
 
-  // 사용자별 육아일기(diary) 컬렉션 참조
+  // diary collection
   CollectionReference? get _userDiariesCollection {
     if (_currentUserId == null) return null;
     return _firestore
@@ -25,7 +24,7 @@ class FireStoreRepository {
         .collection(_diaryCollectionName);
   }
 
-  // 사용자별 아기 정보(baby_info) 컬렉션 참조
+  // baby_info collection
   DocumentReference? get _userBabyInfoDocRef {
     if (_currentUserId == null) return null;
     return _firestore
@@ -35,6 +34,7 @@ class FireStoreRepository {
         .doc(_babyInfoDocName);
   }
 
+  // analysis collection
   CollectionReference? get _userAnalysisCollection {
     if (_currentUserId == null) return null;
     return _firestore
@@ -43,14 +43,13 @@ class FireStoreRepository {
         .collection(_analysisCollectionName);
   }
 
-  // 일기 저장
   Future<void> saveDiary(Diary diary) async {
     if (_userDiariesCollection == null) {
       throw DiaryException('사용자 인증이 필요합니다');
     }
 
     try {
-      final dateId = _formatDateAsId(diary.createdAt);
+      final dateId = _formatDateToString(diary.createdAt);
 
       await _userDiariesCollection!.doc(dateId).set(diary.toJson());
     } catch (e) {
@@ -58,7 +57,6 @@ class FireStoreRepository {
     }
   }
 
-  // 아기 정보 저장
   Future<void> saveBabyInfo(BabyInfo babyInfo) async {
     if (_userBabyInfoDocRef == null) {
       throw BabyInfoException('사용자 인증이 필요합니다');
@@ -71,7 +69,6 @@ class FireStoreRepository {
     }
   }
 
-  // 작성한 모든 다이어리 정보 가져오기
   Future<List<Diary>> getAllDiaries() async {
     if (_userDiariesCollection == null) {
       throw DiaryException('사용자 인증이 필요합니다');
@@ -90,7 +87,6 @@ class FireStoreRepository {
     }
   }
 
-  // 최근 분석 결과 가져오기
   Future<AiResponse?> getRecentAnalysis() async {
     if (_userAnalysisCollection == null) {
       throw AnalysisException('사용자 인증이 필요합니다');
@@ -114,15 +110,13 @@ class FireStoreRepository {
     }
   }
 
-
-  // 일기 업데이트
   Future<void> updateDiary(Diary diary) async {
     if (_userDiariesCollection == null) {
       throw DiaryException('사용자 인증이 필요합니다');
     }
 
     try {
-      final dateId = _formatDateAsId(diary.createdAt);
+      final dateId = _formatDateToString(diary.createdAt);
       final updatedDiary = diary.copyWith(updatedAt: DateTime.now());
 
       await _userDiariesCollection!.doc(dateId).update(updatedDiary.toJson());
@@ -131,21 +125,19 @@ class FireStoreRepository {
     }
   }
 
-  // 일기 삭제
   Future<void> deleteDiaryByDate(DateTime date) async {
     if (_userDiariesCollection == null) {
       throw DiaryException('사용자 인증이 필요합니다');
     }
 
     try {
-      final dateId = _formatDateAsId(date);
+      final dateId = _formatDateToString(date);
       await _userDiariesCollection!.doc(dateId).delete();
     } catch (e) {
       throw DiaryException('일기 삭제에 실패했습니다: $e');
     }
   }
 
-  // 실시간 일기 목록 스트림
   Stream<List<Diary>> getDiariesStream() {
     if (_userDiariesCollection == null) {
       throw DiaryException('사용자 인증이 필요합니다');
@@ -167,7 +159,6 @@ class FireStoreRepository {
     }
   }
 
-  // 실시간 아기 정보 스트림
   Stream<BabyInfo> getBabyInfoStream() {
     if (_userBabyInfoDocRef == null) {
       throw BabyInfoException('사용자 인증이 필요합니다');
@@ -186,30 +177,14 @@ class FireStoreRepository {
     }
   }
 
-  // 특정 날짜 일기 존재 여부 확인
-  Future<bool> diaryExistsForDate(DateTime date) async {
-    if (_userDiariesCollection == null) {
-      throw DiaryException('사용자 인증이 필요합니다');
-    }
-
-    try {
-      final dateId = _formatDateAsId(date);
-      final doc = await _userDiariesCollection!.doc(dateId).get();
-      return doc.exists;
-    } catch (e) {
-      throw DiaryException('일기 존재 확인에 실패했습니다: $e');
-    }
-  }
-
-  // 날짜를 문서 ID 형식으로 변환 (YYYY-MM-DD)
-  String _formatDateAsId(DateTime date) {
+  String _formatDateToString(DateTime date) {
+    // YYYY-MM-DD
     return '${date.year.toString().padLeft(4, '0')}-'
         '${date.month.toString().padLeft(2, '0')}-'
         '${date.day.toString().padLeft(2, '0')}';
   }
 }
 
-// 커스텀 예외 클래스
 class DiaryException implements Exception {
   final String message;
 

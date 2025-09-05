@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-// 성공 메시지를 표시하는 스낵바
 void showSuccessSnackBar(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
@@ -21,7 +20,6 @@ void showSuccessSnackBar(BuildContext context, String message) {
   );
 }
 
-// 실패 메시지를 표시하는 스낵바
 void showErrorSnackBar(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(

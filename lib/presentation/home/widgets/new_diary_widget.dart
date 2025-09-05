@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class NewDiaryWidget extends ConsumerStatefulWidget {
-  final Diary? existingDiary; // 수정할 일기 데이터
+  final Diary? existingDiary; // modify target diary
 
   const NewDiaryWidget({super.key, this.existingDiary});
 
@@ -58,7 +58,6 @@ class _DiaryWriteScreenState extends ConsumerState<NewDiaryWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // false를 전달하여 초기 데이터 로딩 안함
     final diariesStream = ref.watch(diaryStreamProvider);
 
     return Scaffold(
@@ -604,7 +603,7 @@ class _DiaryWriteScreenState extends ConsumerState<NewDiaryWidget> {
   }
 
   Future<void> _saveDiary() async {
-    // 필수 필드 검증
+    // field check
     if (_descriptionController.text
         .trim()
         .isEmpty) {
@@ -613,16 +612,11 @@ class _DiaryWriteScreenState extends ConsumerState<NewDiaryWidget> {
     }
 
     try {
-      // false를 전달하여 초기 데이터 로딩하지 않는 viewmodel 사용
       final viewmodel = ref.read(diaryStreamProvider.notifier);
-
-      // UI 데이터를 Diary 모델로 변환
       final diary = _createDiaryFromInputs();
 
-      // 저장 또는 업데이트
       await viewmodel.saveDiary(diary);
 
-      // 저장 완료 후 상태 확인
       final state = ref.read(diaryStreamProvider);
 
       state.when(
@@ -633,9 +627,7 @@ class _DiaryWriteScreenState extends ConsumerState<NewDiaryWidget> {
         error: (error, _) {
           _showErrorMessage('保存に失敗しました: $error');
         },
-        loading: () {
-          // 로딩 중에는 아무것도 안함 (UI에서 이미 표시됨)
-        },
+        loading: () {},
       );
     } catch (e) {
       _showErrorMessage('保存に失敗しました: $e');

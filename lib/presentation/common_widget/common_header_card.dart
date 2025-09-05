@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class CommonCardWidget {
-  // 카드 컨테이너
   static Widget buildBasicCard({
     required Widget child,
     double borderRadius = 24,
@@ -30,7 +29,7 @@ class CommonCardWidget {
     );
   }
 
-  // 헤더가 있는 컨텐츠 카드
+  // Card Container with header
   static Widget buildContentCard({
     required String title,
     required String content,
@@ -46,7 +45,7 @@ class CommonCardWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 헤더
+          // header
           Container(
             padding:
                 headerPadding ??
@@ -93,7 +92,7 @@ class CommonCardWidget {
               ],
             ),
           ),
-          // 내용
+          // content
           Padding(
             padding: contentPadding ?? const EdgeInsets.all(24),
             child: Text(
@@ -109,14 +108,14 @@ class CommonCardWidget {
     );
   }
 
-  // 헤더가 있는 커스텀 바디 카드
+  // Card Container with widget in header
   static Widget buildCustomBodyCard({
     required String title,
     required Widget body,
     required IconData icon,
     required BuildContext context,
     required List<Color> gradientColors,
-    Widget? headerSuffix, // 헤더 오른쪽 추가 위젯
+    Widget? headerSuffix, // header right widget
     double borderRadius = 24,
     EdgeInsets? headerPadding,
     EdgeInsets? bodyPadding,
@@ -126,7 +125,7 @@ class CommonCardWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 헤더
+          // header
           Container(
             padding:
                 headerPadding ??
@@ -174,7 +173,7 @@ class CommonCardWidget {
               ],
             ),
           ),
-          // 커스텀 바디
+          //content
           Padding(
             padding: bodyPadding ?? const EdgeInsets.all(24),
             child: body,
@@ -184,7 +183,7 @@ class CommonCardWidget {
     );
   }
 
-  // 특별한 스타일의 카드 (신뢰도 점수용)
+  // Card Container for confidenceScore
   static Widget buildSpecialCard({
     required Widget child,
     required List<Color> gradientColors,

@@ -13,7 +13,7 @@ class DiaryWidget extends ConsumerStatefulWidget {
 }
 
 class _DiaryWidgetState extends ConsumerState<DiaryWidget> {
-  int _expandedIndex = -1; // 확장된 아이템의 인덱스
+  int _expandedIndex = -1; // expanded index
 
   @override
   Widget build(BuildContext context) {
@@ -153,7 +153,6 @@ class _DiaryWidgetState extends ConsumerState<DiaryWidget> {
             ),
             child: Column(
               children: [
-                // 기본 리스트 아이템
                 InkWell(
                   onTap: () {
                     setState(() {
@@ -165,7 +164,7 @@ class _DiaryWidgetState extends ConsumerState<DiaryWidget> {
                     padding: const EdgeInsets.all(20),
                     child: Row(
                       children: [
-                        // 날짜 표시
+                        // Date
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 12,
@@ -185,7 +184,7 @@ class _DiaryWidgetState extends ConsumerState<DiaryWidget> {
                           ),
                         ),
                         const SizedBox(width: 16),
-                        // 일기 내용 미리보기
+                        // thumbnail
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -215,7 +214,7 @@ class _DiaryWidgetState extends ConsumerState<DiaryWidget> {
                             ],
                           ),
                         ),
-                        // 확장 아이콘
+                        // expand icon
                         Icon(
                           isExpanded
                               ? Icons.keyboard_arrow_up
@@ -226,7 +225,7 @@ class _DiaryWidgetState extends ConsumerState<DiaryWidget> {
                     ),
                   ),
                 ),
-                // 확장된 내용
+                // expanded content
                 if (isExpanded) _buildExpandedContent(diary, index),
               ],
             ),
@@ -245,7 +244,6 @@ class _DiaryWidgetState extends ConsumerState<DiaryWidget> {
           const Divider(),
           const SizedBox(height: 16),
 
-          // 일기 내용
           _buildDetailSection(
             '今日の記録',
             diary.description.isEmpty ? '記録がありません' : diary.description,
@@ -255,7 +253,6 @@ class _DiaryWidgetState extends ConsumerState<DiaryWidget> {
 
           const SizedBox(height: 16),
 
-          // 수유 정보
           if (diary.feedingInfo != null)
             _buildDetailSection(
               '授乳情報',
@@ -267,7 +264,6 @@ class _DiaryWidgetState extends ConsumerState<DiaryWidget> {
 
           if (diary.feedingInfo != null) const SizedBox(height: 16),
 
-          // 배변 정보
           if (diary.poopInfo != null)
             _buildDetailSection(
               '排便情報',
@@ -279,7 +275,6 @@ class _DiaryWidgetState extends ConsumerState<DiaryWidget> {
 
           if (diary.poopInfo != null) const SizedBox(height: 16),
 
-          // 수면 정보
           if (diary.sleepCount != null)
             _buildDetailSection(
               '睡眠情報',
@@ -290,7 +285,7 @@ class _DiaryWidgetState extends ConsumerState<DiaryWidget> {
 
           if (diary.sleepCount != null) const SizedBox(height: 16),
 
-          // 수정 버튼
+          // modify button
           Align(
             alignment: Alignment.centerRight,
             child: ElevatedButton.icon(

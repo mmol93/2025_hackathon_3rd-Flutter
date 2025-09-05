@@ -30,7 +30,7 @@ class _SettingWidgetState extends ConsumerState<SettingWidget> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // BabyInfo 섹션
+              // BabyInfo
               babyInfoStream.when(
                 data: (babyInfo) => _buildBabyInfoCard(babyInfo),
                 loading: () => _buildLoadingCard(),
@@ -39,7 +39,6 @@ class _SettingWidgetState extends ConsumerState<SettingWidget> {
 
               const SizedBox(height: 20),
 
-              // 로그아웃 버튼
               _buildLogoutButton(loginViewModel, tapController),
             ],
           ),
@@ -103,7 +102,6 @@ class _SettingWidgetState extends ConsumerState<SettingWidget> {
 
             const SizedBox(height: 16),
 
-            // 생일 정보
             _buildInfoRow(
               Icons.cake,
               '誕生日',
@@ -113,7 +111,6 @@ class _SettingWidgetState extends ConsumerState<SettingWidget> {
 
             const SizedBox(height: 12),
 
-            // 성별 정보
             _buildInfoRow(
               Icons.child_care,
               '性別',
@@ -123,7 +120,6 @@ class _SettingWidgetState extends ConsumerState<SettingWidget> {
 
             const SizedBox(height: 12),
 
-            // 체중 정보
             _buildInfoRow(
               Icons.monitor_weight,
               '体重',
