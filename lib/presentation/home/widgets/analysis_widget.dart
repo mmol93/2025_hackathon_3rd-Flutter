@@ -196,10 +196,10 @@ class AnalysisWidget extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // AI의 아기 상태 점수 표시 (항상 표시)
+            // AI의 아기 상태 점수 표시
             _buildConfidenceScoreCard(aiResponse.confidenceScore, context),
 
-            // 동적으로 카드들을 구성
+            // Analysis 결과를 카드 위젯 형태로 표시
             ..._buildConditionalCards(aiResponse, context),
 
             const SizedBox(height: 40),
@@ -209,7 +209,7 @@ class AnalysisWidget extends ConsumerWidget {
     );
   }
 
-  // 조건부로 카드들을 생성하는 메서드
+  // Analysis 각 항목에 맞게 카드뷰 생성
   List<Widget> _buildConditionalCards(AiResponse aiResponse,
       BuildContext context) {
     List<Widget> cards = [];
@@ -329,7 +329,7 @@ class AnalysisWidget extends ConsumerWidget {
                   ],
                 ),
                 child: Icon(
-                  Icons.psychology,
+                  Icons.baby_changing_station,
                   size: 32,
                   color: Colors.blue[600],
                 ),
