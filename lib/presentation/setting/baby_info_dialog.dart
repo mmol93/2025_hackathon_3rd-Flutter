@@ -17,7 +17,6 @@ Future<void> showEditBabyInfoDialog({
       ? '男の子'
       : currentBabyInfo.sex;
 
-  // 기존 생일 파싱
   if (currentBabyInfo.birthday.isNotEmpty) {
     try {
       final parts = currentBabyInfo.birthday.split('-');
@@ -48,7 +47,6 @@ Future<void> showEditBabyInfoDialog({
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 생일 선택
               Text(
                 '誕生日',
                 style: TextStyle(
@@ -99,7 +97,6 @@ Future<void> showEditBabyInfoDialog({
 
               const SizedBox(height: 16),
 
-              // 성별 선택
               Text(
                 '性別',
                 style: TextStyle(
@@ -149,7 +146,6 @@ Future<void> showEditBabyInfoDialog({
 
               const SizedBox(height: 16),
 
-              // 체중 입력
               Text(
                 '体重',
                 style: TextStyle(
@@ -178,7 +174,6 @@ Future<void> showEditBabyInfoDialog({
                 keyboardType: TextInputType.text,
               ),
 
-              // 주의사항 추가
               const SizedBox(height: 20),
               Container(
                 padding: const EdgeInsets.all(12),

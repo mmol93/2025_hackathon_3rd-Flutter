@@ -18,7 +18,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     ref.listen<AsyncValue<void>>(
         loginViewModelProvider, (previousState, nextState) {
       if (nextState.hasError && !nextState.isLoading) {
-        // 처리 실패 시
+        // failed
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Row(
@@ -37,7 +37,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         );
       } else if (previousState is AsyncLoading && !nextState.isLoading &&
           !nextState.hasError) {
-        // 처리 성공 시
+        // success
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Row(
@@ -65,10 +65,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
             children: [
-              // 상단 여백
               SizedBox(height: 80),
-
-              // 앱 아이콘과 제목
               Container(
                 padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -92,7 +89,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
               SizedBox(height: 32),
 
-              // 앱 제목
+              // app name
               Text(
                 'SukuSuku',
                 style: TextStyle(
@@ -104,7 +101,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               ),
 
               SizedBox(height: 20),
-              // 환영 메시지
+              // message
               Container(
                 padding: EdgeInsets.all(24),
                 decoration: BoxDecoration(
@@ -149,7 +146,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
               SizedBox(height: 48),
 
-              // 구글 로그인 버튼
+              // google login button
               Container(
                 width: double.infinity,
                 height: 64,

@@ -34,20 +34,3 @@ void slideNavigateStateful(BuildContext context, Widget screen, {deleteStack = f
     );
   }
 }
-
-void centerNavigateStateful(BuildContext context, Widget screen) {
-  Navigator.push(
-    context,
-    PageRouteBuilder(
-      transitionDuration: const Duration(milliseconds: 100),
-      reverseTransitionDuration: const Duration(milliseconds: 100),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        var curve = Curves.linear;
-        var tween = CurvedAnimation(parent: animation, curve: curve);
-        return ScaleTransition(scale: tween, child: child);
-      },
-      pageBuilder: (context, animation, secondaryAnimation) => screen,
-      fullscreenDialog: false,
-    ),
-  );
-}
