@@ -45,7 +45,7 @@ class FireStoreRepository {
 
   Future<void> saveDiary(Diary diary) async {
     if (_userDiariesCollection == null) {
-      throw DiaryException('사용자 인증이 필요합니다');
+      throw DiaryException('再度ログインが必要です。');
     }
 
     try {
@@ -53,43 +53,43 @@ class FireStoreRepository {
 
       await _userDiariesCollection!.doc(dateId).set(diary.toJson());
     } catch (e) {
-      throw DiaryException('일기 저장에 실패했습니다: $e');
+      throw DiaryException('日記保存に失敗しました。: $e');
     }
   }
 
   Future<void> saveBabyInfo(BabyInfo babyInfo) async {
     if (_userBabyInfoDocRef == null) {
-      throw BabyInfoException('사용자 인증이 필요합니다');
+      throw BabyInfoException('再度ログインが必要です。');
     }
 
     try {
       await _userBabyInfoDocRef!.set(babyInfo.toJson());
     } catch (e) {
-      throw BabyInfoException('아기 정보 저장에 실패했습니다: $e');
+      throw BabyInfoException('赤ちゃんデータ保存に失敗しました。');
     }
   }
 
   Future<List<Diary>> getAllDiaries() async {
     if (_userDiariesCollection == null) {
-      throw DiaryException('사용자 인증이 필요합니다');
+      throw DiaryException('再度ログインが必要です。');
     }
 
     try {
       final querySnapshot = await _userDiariesCollection!
-          .orderBy(FieldPath.documentId) // 문서 ID로 정렬
+          .orderBy(FieldPath.documentId) // arrange with documentId
           .get();
 
       return querySnapshot.docs
           .map((doc) => Diary.fromJson(doc.data() as Map<String, dynamic>))
           .toList();
     } catch (e) {
-      throw DiaryException('일기 목록 조회에 실패했습니다: $e');
+      throw DiaryException('日記データ取得に失敗しました。: $e');
     }
   }
 
   Future<AiResponse?> getRecentAnalysis() async {
     if (_userAnalysisCollection == null) {
-      throw AnalysisException('사용자 인증이 필요합니다');
+      throw AnalysisException('再度ログインが必要です。');
     }
 
     try {
@@ -106,13 +106,13 @@ class FireStoreRepository {
           querySnapshot.docs.first.data() as Map<String, dynamic>
       );
     } catch (e) {
-      throw AnalysisException('AI 분석 결과 조회에 실패했습니다: $e');
+      throw AnalysisException('AI分析結果の取得に失敗しました: $e');
     }
   }
 
   Future<void> updateDiary(Diary diary) async {
     if (_userDiariesCollection == null) {
-      throw DiaryException('사용자 인증이 필요합니다');
+      throw DiaryException('再度ログインが必要です。');
     }
 
     try {
@@ -121,26 +121,26 @@ class FireStoreRepository {
 
       await _userDiariesCollection!.doc(dateId).update(updatedDiary.toJson());
     } catch (e) {
-      throw DiaryException('일기 업데이트에 실패했습니다: $e');
+      throw DiaryException('日記の更新に失敗しました: $e');
     }
   }
 
   Future<void> deleteDiaryByDate(DateTime date) async {
     if (_userDiariesCollection == null) {
-      throw DiaryException('사용자 인증이 필요합니다');
+      throw DiaryException('再度ログインが必要です。');
     }
 
     try {
       final dateId = _formatDateToString(date);
       await _userDiariesCollection!.doc(dateId).delete();
     } catch (e) {
-      throw DiaryException('일기 삭제에 실패했습니다: $e');
+      throw DiaryException('日記の削除に失敗しました: $e');
     }
   }
 
   Stream<List<Diary>> getDiariesStream() {
     if (_userDiariesCollection == null) {
-      throw DiaryException('사용자 인증이 필요합니다');
+      throw DiaryException('再度ログインが必要です。');
     }
 
     try {
@@ -148,20 +148,20 @@ class FireStoreRepository {
           .orderBy(FieldPath.documentId)
           .snapshots()
           .map((snapshot) {
-            return snapshot.docs
-                .map(
-                  (doc) => Diary.fromJson(doc.data() as Map<String, dynamic>),
-                )
-                .toList();
-          });
+        return snapshot.docs
+            .map(
+              (doc) => Diary.fromJson(doc.data() as Map<String, dynamic>),
+        )
+            .toList();
+      });
     } catch (e) {
-      throw DiaryException('일기 스트림 조회에 실패했습니다: $e');
+      throw DiaryException('日記ストリームの取得に失敗しました: $e');
     }
   }
 
   Stream<BabyInfo> getBabyInfoStream() {
     if (_userBabyInfoDocRef == null) {
-      throw BabyInfoException('사용자 인증이 필요합니다');
+      throw BabyInfoException('ユーザー認証が必要です');
     }
 
     try {
@@ -173,7 +173,7 @@ class FireStoreRepository {
         }
       });
     } catch (e) {
-      throw BabyInfoException('아기 정보 스트림 조회에 실패했습니다: $e');
+      throw BabyInfoException('赤ちゃん情報ストリームの取得に失敗しました: $e');
     }
   }
 
