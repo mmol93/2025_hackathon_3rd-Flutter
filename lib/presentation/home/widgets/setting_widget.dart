@@ -1,5 +1,9 @@
 import 'package:babysitter_ham/models/baby_info.dart';
+import 'package:babysitter_ham/navigator/open_navigator.dart';
+import 'package:babysitter_ham/presentation/home/tap_notifier.dart';
+import 'package:babysitter_ham/presentation/login/login_screen.dart';
 import 'package:babysitter_ham/presentation/setting/baby_info_dialog.dart';
+import 'package:babysitter_ham/viewmodel/login_viewmodel.dart';
 import 'package:babysitter_ham/viewmodel/setting_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,6 +19,8 @@ class _SettingWidgetState extends ConsumerState<SettingWidget> {
   @override
   Widget build(BuildContext context) {
     final babyInfoStream = ref.watch(babyInfoStreamProvider);
+    final loginViewModel = ref.watch(loginViewModelProvider.notifier);
+    final tapController = ref.read(tabNotifierProvider.notifier);
 
     return SafeArea(
       child: Scaffold(
@@ -34,7 +40,7 @@ class _SettingWidgetState extends ConsumerState<SettingWidget> {
               const SizedBox(height: 20),
 
               // 로그아웃 버튼
-              _buildLogoutButton(),
+              _buildLogoutButton(loginViewModel, tapController),
             ],
           ),
         ),
@@ -204,7 +210,8 @@ class _SettingWidgetState extends ConsumerState<SettingWidget> {
     );
   }
 
-  Widget _buildLogoutButton() {
+  Widget _buildLogoutButton(LoginViewModel loginViewModel,
+      TabNotifier tapController) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -241,8 +248,12 @@ class _SettingWidgetState extends ConsumerState<SettingWidget> {
           color: Colors.grey[400],
           size: 16,
         ),
-        onTap: () {
-          // 로그아웃 기능은 아직 구현하지 않음
+        onTap: () async {
+          await loginViewModel.signOut();
+          if (mounted) {
+            slideNavigateStateful(context, LoginScreen(), deleteStack: true);
+            tapController.changeTab(0);
+          }
         },
       ),
     );
