@@ -113,7 +113,7 @@ class _DiaryWriteScreenState extends ConsumerState<NewDiaryWidget> {
               _buildDateSection(),
               SizedBox(height: 20),
 
-              // Description (필수)
+              // Description
               _buildDescriptionSection(),
               SizedBox(height: 20),
 

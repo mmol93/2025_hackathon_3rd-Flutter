@@ -106,7 +106,6 @@ class FireStoreRepository {
         return null;
       }
 
-      // AiResponse로 반환
       return AiResponse.fromJson(
           querySnapshot.docs.first.data() as Map<String, dynamic>
       );
