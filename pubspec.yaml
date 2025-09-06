@@ -53,6 +53,7 @@ dependencies:
   # shared_preferences - https://pub.dev/packages/shared_preferences/install
   shared_preferences: ^2.5.3
   timezone: ^0.10.1
+  firebase_messaging: ^15.2.10
 
 dev_dependencies:
   flutter_test:
