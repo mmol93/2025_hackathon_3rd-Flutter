@@ -1,14 +1,44 @@
 import 'package:babysitter_ham/models/analysis.dart';
 import 'package:babysitter_ham/presentation/common_widget/common_header_card.dart';
+import 'package:babysitter_ham/utils/permission_util.dart';
 import 'package:babysitter_ham/viewmodel/analysis_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AnalysisWidget extends ConsumerWidget {
-  const AnalysisWidget({super.key});
+class AnalysisWidget extends ConsumerStatefulWidget {
+  @override
+  ConsumerState<AnalysisWidget> createState() => _AnalysisWidget();
+}
+
+class _AnalysisWidget extends ConsumerState<AnalysisWidget> {
+  bool _hasCheckedPermission = false;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!_hasCheckedPermission) {
+        _checkNotificationPermission();
+        _hasCheckedPermission = true;
+      }
+    });
+  }
+
+  Future<void> _checkNotificationPermission() async {
+    try {
+      bool hasPermission =
+          await NotificationPermissionService.hasNotificationPermission();
+
+      if (!hasPermission) {
+        await NotificationPermissionService.requestNotificationPermission();
+      }
+    } catch (e) {
+      print('Permission check error: $e');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final analysisAsync = ref.watch(analysisProvider);
 
     return SafeArea(
@@ -21,31 +51,25 @@ class AnalysisWidget extends ConsumerWidget {
             }
             return _buildAnalysisContent(aiResponse, ref, context);
           },
-          loading: () =>
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                          Colors.blue[600]!),
-                      strokeWidth: 3,
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
-                      '分析結果を読み込み中...',
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .bodyLarge
-                          ?.copyWith(
-                        color: Colors.blue[600],
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
+          loading: () => Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.blue[600]!),
+                  strokeWidth: 3,
                 ),
-              ),
+                const SizedBox(height: 24),
+                Text(
+                  '分析結果を読み込み中...',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: Colors.blue[600],
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
           error: (error, stackTrace) =>
               _buildErrorState(error.toString(), ref, context),
         ),
@@ -78,11 +102,7 @@ class AnalysisWidget extends ConsumerWidget {
               const SizedBox(height: 24),
               Text(
                 'まだ分析結果がありません',
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .headlineSmall
-                    ?.copyWith(
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.w600,
                   color: Colors.blue[800],
                 ),
@@ -91,13 +111,9 @@ class AnalysisWidget extends ConsumerWidget {
               const SizedBox(height: 12),
               Text(
                 '赤ちゃんの日記を作成すると\nAI分析結果が表示されます',
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .bodyLarge
-                    ?.copyWith(
-                  color: Colors.grey[600],
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyLarge?.copyWith(color: Colors.grey[600]),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -141,11 +157,7 @@ class AnalysisWidget extends ConsumerWidget {
               const SizedBox(height: 24),
               Text(
                 'エラーが発生しました',
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .headlineSmall
-                    ?.copyWith(
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.w600,
                   color: Colors.red[600],
                 ),
@@ -154,13 +166,9 @@ class AnalysisWidget extends ConsumerWidget {
               const SizedBox(height: 12),
               Text(
                 error,
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .bodyMedium
-                    ?.copyWith(
-                  color: Colors.grey[600],
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
@@ -170,7 +178,9 @@ class AnalysisWidget extends ConsumerWidget {
                   backgroundColor: Colors.red[600],
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 24, vertical: 12),
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
@@ -184,8 +194,11 @@ class AnalysisWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildAnalysisContent(AiResponse aiResponse, WidgetRef ref,
-      BuildContext context) {
+  Widget _buildAnalysisContent(
+    AiResponse aiResponse,
+    WidgetRef ref,
+    BuildContext context,
+  ) {
     return RefreshIndicator.adaptive(
       onRefresh: () async {
         await ref.read(analysisProvider.notifier).refresh();
@@ -208,14 +221,14 @@ class AnalysisWidget extends ConsumerWidget {
   }
 
   // Analysis 각 항목에 맞게 카드뷰 생성
-  List<Widget> _buildConditionalCards(AiResponse aiResponse,
-      BuildContext context) {
+  List<Widget> _buildConditionalCards(
+    AiResponse aiResponse,
+    BuildContext context,
+  ) {
     List<Widget> cards = [];
 
     // AIアドバイス
-    if (aiResponse.analysis.advice
-        .trim()
-        .isNotEmpty) {
+    if (aiResponse.analysis.advice.trim().isNotEmpty) {
       cards.add(const SizedBox(height: 24));
       cards.add(
         CommonCardWidget.buildContentCard(
@@ -229,9 +242,7 @@ class AnalysisWidget extends ConsumerWidget {
     }
 
     // 成長パターン
-    if (aiResponse.analysis.growthPattern
-        .trim()
-        .isNotEmpty) {
+    if (aiResponse.analysis.growthPattern.trim().isNotEmpty) {
       cards.add(const SizedBox(height: 20));
       cards.add(
         CommonCardWidget.buildContentCard(
@@ -253,9 +264,7 @@ class AnalysisWidget extends ConsumerWidget {
     }
 
     // 推奨事項
-    if (aiResponse.analysis.recommendations
-        .trim()
-        .isNotEmpty) {
+    if (aiResponse.analysis.recommendations.trim().isNotEmpty) {
       cards.add(const SizedBox(height: 20));
       cards.add(
         CommonCardWidget.buildContentCard(
@@ -269,9 +278,7 @@ class AnalysisWidget extends ConsumerWidget {
     }
 
     // リスク要因
-    if (aiResponse.analysis.riskFactors
-        .trim()
-        .isNotEmpty) {
+    if (aiResponse.analysis.riskFactors.trim().isNotEmpty) {
       cards.add(const SizedBox(height: 20));
       cards.add(
         CommonCardWidget.buildContentCard(
@@ -339,11 +346,7 @@ class AnalysisWidget extends ConsumerWidget {
                   children: [
                     Text(
                       '赤ちゃん状態スコア',
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .titleLarge
-                          ?.copyWith(
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
                       ),
@@ -353,14 +356,11 @@ class AnalysisWidget extends ConsumerWidget {
                       children: [
                         Text(
                           '$confidenceScore点',
-                          style: Theme
-                              .of(context)
-                              .textTheme
-                              .displaySmall
+                          style: Theme.of(context).textTheme.displaySmall
                               ?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                          ),
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
                         ),
                         const SizedBox(width: 16),
                         Container(
@@ -383,22 +383,15 @@ class AnalysisWidget extends ConsumerWidget {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(
-                                scoreIcon,
-                                size: 16,
-                                color: Colors.white,
-                              ),
+                              Icon(scoreIcon, size: 16, color: Colors.white),
                               const SizedBox(width: 6),
                               Text(
                                 scoreText,
-                                style: Theme
-                                    .of(context)
-                                    .textTheme
-                                    .labelLarge
+                                style: Theme.of(context).textTheme.labelLarge
                                     ?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
                               ),
                             ],
                           ),
@@ -417,10 +410,7 @@ class AnalysisWidget extends ConsumerWidget {
 
   Widget _buildPriorityActionsCard(List<String> actions, BuildContext context) {
     final actionsBody = Column(
-      children: actions
-          .asMap()
-          .entries
-          .map((entry) {
+      children: actions.asMap().entries.map((entry) {
         final index = entry.key;
         final action = entry.value;
         return Container(
@@ -429,10 +419,7 @@ class AnalysisWidget extends ConsumerWidget {
           decoration: BoxDecoration(
             color: Colors.purple[50],
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: Colors.purple[100]!,
-              width: 1,
-            ),
+            border: Border.all(color: Colors.purple[100]!, width: 1),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -443,10 +430,7 @@ class AnalysisWidget extends ConsumerWidget {
                 decoration: BoxDecoration(
                   color: Colors.purple[100],
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: Colors.purple[300]!,
-                    width: 2,
-                  ),
+                  border: Border.all(color: Colors.purple[300]!, width: 2),
                 ),
                 child: Icon(
                   Icons.check_rounded,
@@ -458,11 +442,7 @@ class AnalysisWidget extends ConsumerWidget {
               Expanded(
                 child: Text(
                   action,
-                  style: Theme
-                      .of(context)
-                      .textTheme
-                      .bodyLarge
-                      ?.copyWith(
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: Colors.grey[800],
                     height: 1.5,
                   ),
@@ -481,21 +461,14 @@ class AnalysisWidget extends ConsumerWidget {
       context: context,
       gradientColors: [Colors.purple[300]!, Colors.purple[500]!],
       headerSuffix: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 8,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.2),
           borderRadius: BorderRadius.circular(16),
         ),
         child: Text(
           '${actions.length}項目',
-          style: Theme
-              .of(context)
-              .textTheme
-              .labelMedium
-              ?.copyWith(
+          style: Theme.of(context).textTheme.labelMedium?.copyWith(
             fontWeight: FontWeight.w600,
             color: Colors.white,
           ),
