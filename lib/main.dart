@@ -1,4 +1,5 @@
 import 'package:babysitter_ham/presentation/login/login_screen.dart';
+import 'package:babysitter_ham/utils/firebase_message.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await FirebaseMessage.initialize();
   runApp(const ProviderScope(child: MyApp()));
 }
 

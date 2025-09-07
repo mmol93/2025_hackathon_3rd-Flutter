@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AnalysisWidget extends ConsumerStatefulWidget {
+  const AnalysisWidget({super.key});
+
   @override
   ConsumerState<AnalysisWidget> createState() => _AnalysisWidget();
 }
