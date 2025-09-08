@@ -201,23 +201,17 @@ class _AnalysisWidget extends ConsumerState<AnalysisWidget> {
     WidgetRef ref,
     BuildContext context,
   ) {
-    return RefreshIndicator.adaptive(
-      onRefresh: () async {
-        await ref.read(analysisProvider.notifier).refresh();
-      },
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // show Analysis result
-            _buildConfidenceScoreCard(aiResponse.confidenceScore, context),
-            ..._buildConditionalCards(aiResponse, context),
-
-            const SizedBox(height: 40),
-          ],
-        ),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      physics: const AlwaysScrollableScrollPhysics(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // show Analysis result
+          _buildConfidenceScoreCard(aiResponse.confidenceScore, context),
+          ..._buildConditionalCards(aiResponse, context),
+          const SizedBox(height: 40),
+        ],
       ),
     );
   }

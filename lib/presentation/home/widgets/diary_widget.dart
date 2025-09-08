@@ -126,112 +126,107 @@ class _DiaryWidgetState extends ConsumerState<DiaryWidget> {
   }
 
   Widget _buildDiaryList(List<Diary> diaries) {
-    return RefreshIndicator(
-      onRefresh: () async {
-        ref.refresh(diaryStreamProvider);
-      },
-      child: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: diaries.length,
-        itemBuilder: (context, index) {
-          final diary = diaries[index];
-          final isExpanded = _expandedIndex == index;
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: diaries.length,
+      itemBuilder: (context, index) {
+        final diary = diaries[index];
+        final isExpanded = _expandedIndex == index;
 
-          return Container(
-            margin: const EdgeInsets.only(bottom: 12),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
-                  spreadRadius: 2,
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Column(
-              children: [
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      _expandedIndex = isExpanded ? -1 : index;
-                    });
-                  },
-                  borderRadius: BorderRadius.circular(16),
-                  child: Container(
-                    padding: const EdgeInsets.all(20),
-                    child: Row(
-                      children: [
-                        // Date
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
+        return Container(
+          margin: const EdgeInsets.only(bottom: 12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                spreadRadius: 2,
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              InkWell(
+                onTap: () {
+                  setState(() {
+                    _expandedIndex = isExpanded ? -1 : index;
+                  });
+                },
+                borderRadius: BorderRadius.circular(16),
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  child: Row(
+                    children: [
+                      // Date
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.blue[100],
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          _formatDate(diary.dateTime),
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.blue[800],
                           ),
-                          decoration: BoxDecoration(
-                            color: Colors.blue[100],
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            _formatDate(diary.dateTime),
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.blue[800],
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      // thumbnail
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              diary.description.isEmpty
+                                  ? '内容がありません'
+                                  : diary.description,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: diary.description.isEmpty
+                                    ? Colors.grey[500]
+                                    : Colors.grey[800],
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        // thumbnail
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                diary.description.isEmpty
-                                    ? '内容がありません'
-                                    : diary.description,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  color: diary.description.isEmpty
-                                      ? Colors.grey[500]
-                                      : Colors.grey[800],
-                                ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
+                            const SizedBox(height: 4),
+                            Text(
+                              _formatDateTime(diary.createdAt),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey[500],
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                _formatDateTime(diary.createdAt),
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey[500],
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                        // expand icon
-                        Icon(
-                          isExpanded
-                              ? Icons.keyboard_arrow_up
-                              : Icons.keyboard_arrow_down,
-                          color: Colors.blue[600],
-                        ),
-                      ],
-                    ),
+                      ),
+                      // expand icon
+                      Icon(
+                        isExpanded
+                            ? Icons.keyboard_arrow_up
+                            : Icons.keyboard_arrow_down,
+                        color: Colors.blue[600],
+                      ),
+                    ],
                   ),
                 ),
-                // expanded content
-                if (isExpanded) _buildExpandedContent(diary, index),
-              ],
-            ),
-          );
-        },
-      ),
+              ),
+              // expanded content
+              if (isExpanded) _buildExpandedContent(diary, index),
+            ],
+          ),
+        );
+      },
     );
   }
 
