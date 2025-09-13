@@ -8,11 +8,13 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 class FirebaseMessage {
   static Future<void> initialize() async {
-    await FirebaseMessaging.instance.requestPermission();
+    FirebaseMessaging firebaseMessage = FirebaseMessaging.instance;
+    await firebaseMessage.requestPermission();
 
     // setup background handler
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
+    await firebaseMessage.subscribeToTopic('all_users');
     String? token = await FirebaseMessaging.instance.getToken();
     print('FCM token: $token');
 
