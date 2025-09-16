@@ -87,26 +87,30 @@ class FireStoreRepository {
     }
   }
 
-  Future<AiResponse?> getRecentAnalysis() async {
+  Stream<AiResponse?> getRecentAnalysisStream() {
     if (_userAnalysisCollection == null) {
-      throw AnalysisException('再度ログインが必要です。');
+      return Stream.error(AnalysisException('再度ログインが必要です。'));
     }
 
     try {
-      final querySnapshot = await _userAnalysisCollection!
+      return _userAnalysisCollection!
           .orderBy(FieldPath.documentId, descending: true)
           .limit(1)
-          .get();
+          .snapshots()
+          .map((querySnapshot) {
+            if (querySnapshot.docs.isEmpty) {
+              return null;
+            }
 
-      if (querySnapshot.docs.isEmpty) {
-        return null;
-      }
-
-      return AiResponse.fromJson(
-          querySnapshot.docs.first.data() as Map<String, dynamic>
-      );
+            return AiResponse.fromJson(
+          querySnapshot.docs.first.data() as Map<String, dynamic>,
+        );
+      })
+          .handleError((error) {
+        throw AnalysisException('AI分析結果の取得に失敗しました: $error');
+      });
     } catch (e) {
-      throw AnalysisException('AI分析結果の取得に失敗しました: $e');
+      return Stream.error(AnalysisException('AI分析結果の取得に失敗しました: $e'));
     }
   }
 
@@ -148,12 +152,12 @@ class FireStoreRepository {
           .orderBy(FieldPath.documentId)
           .snapshots()
           .map((snapshot) {
-        return snapshot.docs
-            .map(
-              (doc) => Diary.fromJson(doc.data() as Map<String, dynamic>),
-        )
-            .toList();
-      });
+            return snapshot.docs
+                .map(
+                  (doc) => Diary.fromJson(doc.data() as Map<String, dynamic>),
+                )
+                .toList();
+          });
     } catch (e) {
       throw DiaryException('日記ストリームの取得に失敗しました: $e');
     }
