@@ -4,23 +4,18 @@ import 'package:babysitter_ham/models/analysis.dart';
 import 'package:babysitter_ham/provider/firestore_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AnalysisNotifier extends AsyncNotifier<AiResponse?> {
+class AnalysisNotifier extends StreamNotifier<AiResponse?> {
   @override
-  Future<AiResponse?> build() async {
+  Stream<AiResponse?> build() {
     final fireStoreRepository = ref.watch(fireStoreProvider);
-    return await fireStoreRepository.getRecentAnalysis();
+    return fireStoreRepository.getRecentAnalysisStream();
   }
 
   Future<void> refresh() async {
-    state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() async {
-      final fireStoreRepository = ref.read(fireStoreProvider);
-      return await fireStoreRepository.getRecentAnalysis();
-    });
+    ref.invalidateSelf();
   }
 }
 
-final analysisProvider = AsyncNotifierProvider<AnalysisNotifier,
-    AiResponse?>(() {
-  return AnalysisNotifier();
-});
+final analysisProvider = StreamNotifierProvider<AnalysisNotifier, AiResponse?>(
+  () => AnalysisNotifier(),
+);
