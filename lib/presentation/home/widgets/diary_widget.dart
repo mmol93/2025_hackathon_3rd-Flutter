@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:babysitter_ham/models/diary.dart';
 import 'package:babysitter_ham/navigator/open_navigator.dart';
 import 'package:babysitter_ham/presentation/home/widgets/new_diary_widget.dart';
@@ -13,7 +15,40 @@ class DiaryWidget extends ConsumerStatefulWidget {
 }
 
 class _DiaryWidgetState extends ConsumerState<DiaryWidget> {
-  int _expandedIndex = -1; // expanded index
+  int _expandedIndex = -1;
+  bool _showFloatingButton = true;
+  Timer? _hideTimer; // floating button display timer
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _scrollController.addListener(() {
+      if (_showFloatingButton) {
+        setState(() {
+          _showFloatingButton = false;
+        });
+
+        _hideTimer?.cancel();
+
+        _hideTimer = Timer(Duration(milliseconds: 1000), () {
+          if (mounted) {
+            setState(() {
+              _showFloatingButton = true;
+            });
+          }
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _hideTimer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,23 +64,25 @@ class _DiaryWidgetState extends ConsumerState<DiaryWidget> {
             }
             return _buildDiaryList(diaries);
           },
-          loading: () =>
-              Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.blue[600]!),
-                ),
-              ),
+          loading: () => Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue[600]!),
+            ),
+          ),
           error: (error, stackTrace) => _buildErrorState(error.toString()),
         ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {
-            slideNavigateStateful(context, NewDiaryWidget());
-          },
-          icon: const Icon(Icons.add),
-          label: const Text('日記作成'),
-          backgroundColor: Colors.blue[600],
-          foregroundColor: Colors.white,
-        ),
+        // display floating condition
+        floatingActionButton: _showFloatingButton
+            ? FloatingActionButton.extended(
+                onPressed: () {
+                  slideNavigateStateful(context, NewDiaryWidget());
+                },
+                icon: const Icon(Icons.add),
+                label: const Text('日記作成'),
+                backgroundColor: Colors.blue[600],
+                foregroundColor: Colors.white,
+              )
+            : null,
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       ),
     );
@@ -56,11 +93,7 @@ class _DiaryWidgetState extends ConsumerState<DiaryWidget> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.baby_changing_station,
-            size: 64,
-            color: Colors.blue[600],
-          ),
+          Icon(Icons.baby_changing_station, size: 64, color: Colors.blue[600]),
           const SizedBox(height: 16),
           Text(
             'まだ日記がありません',
@@ -73,10 +106,7 @@ class _DiaryWidgetState extends ConsumerState<DiaryWidget> {
           const SizedBox(height: 8),
           const Text(
             '赤ちゃんの大切な瞬間を記録してみてください',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey,
-            ),
+            style: TextStyle(fontSize: 16, color: Colors.grey),
           ),
         ],
       ),
@@ -88,11 +118,7 @@ class _DiaryWidgetState extends ConsumerState<DiaryWidget> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: Colors.red[400],
-          ),
+          Icon(Icons.error_outline, size: 64, color: Colors.red[400]),
           const SizedBox(height: 16),
           Text(
             'エラーが発生しました',
@@ -105,10 +131,7 @@ class _DiaryWidgetState extends ConsumerState<DiaryWidget> {
           const SizedBox(height: 8),
           Text(
             error,
-            style: const TextStyle(
-              fontSize: 14,
-              color: Colors.grey,
-            ),
+            style: const TextStyle(fontSize: 14, color: Colors.grey),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
@@ -127,6 +150,7 @@ class _DiaryWidgetState extends ConsumerState<DiaryWidget> {
 
   Widget _buildDiaryList(List<Diary> diaries) {
     return ListView.builder(
+      controller: _scrollController,
       padding: const EdgeInsets.all(16),
       itemCount: diaries.length,
       itemBuilder: (context, index) {
@@ -160,7 +184,6 @@ class _DiaryWidgetState extends ConsumerState<DiaryWidget> {
                   padding: const EdgeInsets.all(20),
                   child: Row(
                     children: [
-                      // Date
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 12,
@@ -310,10 +333,12 @@ class _DiaryWidgetState extends ConsumerState<DiaryWidget> {
     );
   }
 
-  Widget _buildDetailSection(String title,
-      String content,
-      IconData icon,
-      Color iconColor,) {
+  Widget _buildDetailSection(
+    String title,
+    String content,
+    IconData icon,
+    Color iconColor,
+  ) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -334,10 +359,7 @@ class _DiaryWidgetState extends ConsumerState<DiaryWidget> {
               const SizedBox(height: 4),
               Text(
                 content,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[700],
-                ),
+                style: TextStyle(fontSize: 14, color: Colors.grey[700]),
               ),
             ],
           ),
