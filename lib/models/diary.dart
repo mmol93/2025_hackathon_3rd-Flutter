@@ -126,9 +126,9 @@ enum FeedingType {
 
   final String displayName;
 
-  static FeedingType fromString(String value) {
+  static FeedingType fromString(String displayName) {
     return FeedingType.values.firstWhere(
-      (type) => type.name == value,
+      (type) => type.displayName == displayName,
       orElse: () => FeedingType.breastMilk,
     );
   }
@@ -148,7 +148,7 @@ class FeedingInfo {
   }
 
   Map<String, dynamic> toJson() {
-    return {'times': times, 'type': type.name};
+    return {'times': times, 'type': type.displayName};
   }
 
   FeedingInfo copyWith({int? times, FeedingType? type}) {
