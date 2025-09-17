@@ -144,3 +144,8 @@ app.*.symbols
 
 # Firebase
 firebase_options.dart
+.firebase/
+*.cache
+
+# Custom
+test_script.txt
