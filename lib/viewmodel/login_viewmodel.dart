@@ -23,6 +23,8 @@ class LoginViewModel extends AsyncNotifier<void> {
   }
 }
 
-final loginViewModelProvider = AsyncNotifierProvider<LoginViewModel, void>(
+final loginViewModelProvider = AsyncNotifierProvider.autoDispose<
+    LoginViewModel,
+    void>(
   LoginViewModel.new,
 );
