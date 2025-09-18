@@ -246,7 +246,8 @@ class _SettingWidgetState extends ConsumerState<SettingWidget> {
         ),
         onTap: () async {
           await loginViewModel.signOut();
-          if (mounted) {
+          final currentState = ref.read(loginViewModelProvider);
+          if (mounted && !currentState.hasError) {
             slideNavigateStateful(context, LoginScreen(), deleteStack: true);
             tapController.changeTab(0);
           }

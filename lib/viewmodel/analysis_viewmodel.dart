@@ -16,6 +16,7 @@ class AnalysisNotifier extends StreamNotifier<AiResponse?> {
   }
 }
 
-final analysisProvider = StreamNotifierProvider<AnalysisNotifier, AiResponse?>(
-  () => AnalysisNotifier(),
+final analysisProvider =
+    StreamNotifierProvider.autoDispose<AnalysisNotifier, AiResponse?>(
+      () => AnalysisNotifier(),
 );
