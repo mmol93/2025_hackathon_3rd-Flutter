@@ -2,6 +2,7 @@ import 'package:babysitter_ham/firebase_options.dart';
 import 'package:babysitter_ham/presentation/login/login_screen.dart';
 import 'package:babysitter_ham/utils/firebase_message.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      locale: kIsWeb ? const Locale('ja', 'JP') : null,
       title: 'SukuSuku',
       theme: ThemeData(
         primarySwatch: Colors.blue,
