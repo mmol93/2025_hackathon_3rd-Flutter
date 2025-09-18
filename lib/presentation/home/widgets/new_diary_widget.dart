@@ -236,7 +236,7 @@ class _DiaryWriteScreenState extends ConsumerState<NewDiaryWidget> {
             controller: _descriptionController,
             label: '日記内容',
             hint: '今日あったことを記録してみてください',
-            maxLines: 4,
+            maxLines: 12,
           ),
         ],
       ),
