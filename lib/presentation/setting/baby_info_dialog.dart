@@ -2,6 +2,7 @@ import 'package:babysitter_ham/models/baby_info.dart';
 import 'package:babysitter_ham/presentation/common_widget/common_snackbar.dart';
 import 'package:babysitter_ham/viewmodel/setting_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 Future<void> showEditBabyInfoDialog({
@@ -9,8 +10,13 @@ Future<void> showEditBabyInfoDialog({
   required WidgetRef ref,
   required BabyInfo currentBabyInfo,
 }) async {
+  String weightText = currentBabyInfo.weight;
+  if (weightText.endsWith('kg')) {
+    weightText = weightText.substring(0, weightText.length - 2);
+  }
+
   final TextEditingController weightController = TextEditingController(
-    text: currentBabyInfo.weight,
+    text: weightText,
   );
   DateTime? selectedDate;
   String selectedSex = currentBabyInfo.sex.isEmpty
@@ -147,7 +153,7 @@ Future<void> showEditBabyInfoDialog({
               const SizedBox(height: 16),
 
               Text(
-                '体重',
+                '体重(kg)',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -158,11 +164,12 @@ Future<void> showEditBabyInfoDialog({
               TextField(
                 controller: weightController,
                 decoration: InputDecoration(
-                  hintText: '例: 3.5kg',
+                  hintText: '例: 3.5',
                   prefixIcon: Icon(
                     Icons.monitor_weight,
                     color: Colors.green[400],
                   ),
+                  suffixText: 'kg',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -171,7 +178,11 @@ Future<void> showEditBabyInfoDialog({
                     borderSide: BorderSide(color: Colors.blue[600]!),
                   ),
                 ),
-                keyboardType: TextInputType.text,
+                keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+                ],
               ),
 
               const SizedBox(height: 20),
@@ -225,12 +236,17 @@ Future<void> showEditBabyInfoDialog({
           ),
           ElevatedButton(
             onPressed: () async {
+              String weightValue = weightController.text.trim();
+              if (weightValue.isNotEmpty) {
+                weightValue = '${weightValue}kg';
+              }
+
               final newBabyInfo = BabyInfo(
                 birthday: selectedDate != null
                     ? '${selectedDate!.year}-${selectedDate!.month.toString().padLeft(2, '0')}-${selectedDate!.day.toString().padLeft(2, '0')}'
                     : '',
                 sex: selectedSex,
-                weight: weightController.text.trim(),
+                weight: weightValue,
               );
 
               try {

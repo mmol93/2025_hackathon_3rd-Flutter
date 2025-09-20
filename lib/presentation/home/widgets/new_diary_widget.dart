@@ -235,7 +235,7 @@ class _DiaryWriteScreenState extends ConsumerState<NewDiaryWidget> {
           _buildInputField(
             controller: _descriptionController,
             label: '日記内容',
-            hint: '今日あったことを記録してみてください',
+            hint: '今日あったこと、不安、状態などなんでも記録してみてください',
             maxLines: 12,
           ),
         ],
