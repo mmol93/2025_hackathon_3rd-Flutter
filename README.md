@@ -1,16 +1,31 @@
-# babysitter_ham
+# 🍼 すくすく（Sukusaku）- AI育児日記アプリ
 
-A new Flutter project.
+**初めての子育てをAIがサポート**
 
-## Getting Started
+すくすくは育児日記を記録するとAIが毎日自動で分析し、パーソナライズされた育児アドバイスを提供するアプリです。
 
-This project is a starting point for a Flutter application.
+## 🎯 開発背景
 
-A few resources to get you started if this is your first Flutter project:
+2026年に初めての赤ちゃんを迎えることになり、初めての育児への不安を解決するために開発したプロジェクトです。24時間いつでも専門的で科学的な育児相談を受けられるよう、Google
+Vertex AIと厚生労働省データを基盤としたRAGシステムを構築しました。
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## ✨ 主な機能
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- **簡単な日記作成**: 授乳、排便、睡眠など厚生労働省標準項目に基づく記録
+- **AI自動分析**: 毎日朝6時に最新2日分の日記を分析してオーダーメイドのアドバイスを提供
+- **総合状態スコア**: 赤ちゃんの現在の状態を数値で表現
+- **パーソナライズ推奨**: 成長パターン分析と優先行動項目の提示
+- **プッシュ通知**: 分析完了時の自動通知
+
+## 🛠 技術スタック
+
+- **Frontend**: Flutter (Android/Web)
+- **Backend**: Google Cloud Run, Firestore
+- **AI Engine**: Vertex AI (Gemini 2.5 Flash)
+- **Authentication**: Firebase Auth
+
+すくすくは全ての初心者パパママが安心して育児できるようサポートすることを目標としています。
+
+## 🌏 Blog
+
+https://zenn.dev/mmol93/articles/3bc9849cb0af95
