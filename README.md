@@ -27,8 +27,6 @@ Search機能で自動補完し、毎日育児専門家からアドバイスを�
 - **AI Engine**: Vertex AI (Gemini 2.5 Flash Lite)
 - **Authentication**: Firebase Auth
 
-すくすく（Sukusuku）-は全ての初心者パパママが安心して育児できるようサポートしたい気持ちを入れました。
-
 ## 🌏 Blog
 
 https://zenn.dev/mmol93/articles/3bc9849cb0af95
