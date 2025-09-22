@@ -1,4 +1,4 @@
-# 🍼 すくすく（Sukusaku）- AI育児日記アプリ
+# 🍼 すくすく（Sukusuku）- AI育児日記アプリ
 
 **初めての子育てをAIがサポート**
 
@@ -22,9 +22,9 @@ Search機能で自動補完し、毎日育児専門家からアドバイスを�
 
 ## 🛠 技術スタック
 
-- **Frontend**: Flutter (Android/Web)
-- **Backend**: Google Cloud Run, Firestore
-- **AI Engine**: Vertex AI (Gemini 2.5 Flash)
+- **Frontend**: Flutter (Android/Web/iOS)
+- **Backend**: Google Cloud Run, FireStore
+- **AI Engine**: Vertex AI (Gemini 2.5 Flash Lite)
 - **Authentication**: Firebase Auth
 
 すくすくは全ての初心者パパママが安心して育児できるようサポートすることを目標としています。
